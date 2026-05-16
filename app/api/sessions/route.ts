@@ -2,7 +2,7 @@ import { requireAuth } from "@/lib/api/auth";
 import { jsonError, jsonOk, parseJsonBody } from "@/lib/api/http";
 import { buildAvatarSystemPrompt } from "@/lib/avatarBriefBuilder";
 import { createCall } from "@/lib/beyondPresence";
-import { retrieveContext } from "@/lib/contextRetriever";
+import { buildSessionUserContextBlock } from "@/lib/sessionContext";
 import { createServiceSupabaseClient } from "@/lib/db";
 import { CreateSessionSchema } from "@/lib/schemas";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rateLimit";
@@ -108,17 +108,19 @@ export async function POST(request: Request) {
     return jsonError("Target profile must be complete before starting a session", 400);
   }
 
-  const userContext = await retrieveContext({
+  const userContextBlock = await buildSessionUserContextBlock({
     orgId: auth.session.organization.id,
     userId: auth.session.user.id,
     goal: scenario.goal,
+    targetProfileId: target.id,
+    targetName: target.name,
     includeCompany: auth.session.organization.mode === "team",
   });
 
   const systemPrompt = buildAvatarSystemPrompt({
     target: target as TargetProfile,
     scenario: scenario as Scenario,
-    userContextBlock: userContext,
+    userContextBlock,
   });
 
   const { data: session, error: sessionError } = await supabase
