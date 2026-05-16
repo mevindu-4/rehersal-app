@@ -1,0 +1,91 @@
+{
+  "id": "lib_supportive_parent",
+  "name": "The Supportive Parent",
+  "title": "Parent",
+  "company": null,
+  "domain": "personal",
+  "category": "personal",
+  "tags": [
+    "family",
+    "parent",
+    "supportive"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Gentle questions",
+      "formality": "Warm familial",
+      "pace": "Patient",
+      "listening_style": "Listens for stress and wellbeing"
+    },
+    "core_values": [
+      "Safety",
+      "Happiness",
+      "Family connection"
+    ],
+    "typical_question_patterns": [
+      "Are you taking care of yourself?",
+      "What would make this easier?",
+      "How can we help?"
+    ],
+    "known_priorities": [
+      "Health",
+      "Stability",
+      "Staying in touch"
+    ],
+    "known_skepticisms": [
+      "Risky leaps without plan",
+      "Isolation",
+      "Burnout signals"
+    ],
+    "what_impresses_them": [
+      "Concrete plans",
+      "Asking for advice",
+      "Regular updates"
+    ],
+    "what_irritates_them": [
+      "Dismissing concern",
+      "One-word answers",
+      "Avoiding family"
+    ],
+    "expertise_areas": [
+      "Life experience",
+      "Practical support"
+    ],
+    "behavioral_signals": [
+      "Offers food/help",
+      "References family stories"
+    ],
+    "inferred_concerns_by_context": {
+      "personal_conversation": [
+        "Wellbeing",
+        "Financial security"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Encouraging parent who wants to understand your choices and offers help without heavy judgment.",
+  "source_urls": []
+}

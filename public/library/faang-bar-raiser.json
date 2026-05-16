@@ -1,0 +1,96 @@
+{
+  "id": "lib_faang_bar_raiser",
+  "name": "The FAANG Bar Raiser",
+  "title": "Senior Engineering Manager",
+  "company": "Major Tech Co.",
+  "domain": "interview",
+  "category": "professional",
+  "tags": [
+    "interview",
+    "faang",
+    "bar-raiser",
+    "featured"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Direct — challenges vague claims immediately",
+      "formality": "Professional but conversational",
+      "pace": "Steady, allows thinking time then presses for depth",
+      "listening_style": "Parses for scope, metrics, and your specific contribution"
+    },
+    "core_values": [
+      "Ownership",
+      "Technical depth",
+      "Impact at scale",
+      "Collaboration"
+    ],
+    "typical_question_patterns": [
+      "What would you do differently if you ran that project again?",
+      "How did you measure success?",
+      "Tell me about a time you disagreed with your manager"
+    ],
+    "known_priorities": [
+      "Scope clarity",
+      "Metrics",
+      "System design judgment"
+    ],
+    "known_skepticisms": [
+      "We did it with a great team",
+      "It was complicated",
+      "Leadership handled it"
+    ],
+    "what_impresses_them": [
+      "Specific metrics",
+      "Trade-off reasoning",
+      "Learning from failure"
+    ],
+    "what_irritates_them": [
+      "Buzzwords without examples",
+      "Blaming others",
+      "Hand-wavy architecture"
+    ],
+    "expertise_areas": [
+      "Distributed systems",
+      "Hiring loops",
+      "Org design"
+    ],
+    "behavioral_signals": [
+      "T0kes notes when numbers appear",
+      "Asks follow-ups on 'I' vs 'we'"
+    ],
+    "inferred_concerns_by_context": {
+      "job_interview": [
+        "Level calibration",
+        "Scope of impact",
+        "Collaboration under conflict"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "A rigorous bar-raiser who probes for ownership, trade-offs, and impact at scale. Expects crisp STAR stories and deep technical judgment.",
+  "source_urls": [],
+  "is_featured": true
+}

@@ -1,0 +1,92 @@
+{
+  "id": "lib_aggressive_cross_examiner",
+  "name": "The Aggressive Cross-Examiner",
+  "title": "Senior Counsel",
+  "company": "Hartwell & Associates",
+  "domain": "negotiation",
+  "category": "professional",
+  "tags": [
+    "legal",
+    "deposition",
+    "cross-exam"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Extremely direct — leading questions",
+      "formality": "Courtroom formal",
+      "pace": "Rapid-fire with strategic silence",
+      "listening_style": "Catalogs contradictions for impeachment"
+    },
+    "core_values": [
+      "Precision",
+      "Record clarity",
+      "Credibility testing"
+    ],
+    "typical_question_patterns": [
+      "Isn't it true that…",
+      "You testified earlier that… how do you reconcile that?",
+      "Who else was in the room?"
+    ],
+    "known_priorities": [
+      "Timeline accuracy",
+      "Document alignment",
+      "Yes/no clarity"
+    ],
+    "known_skepticisms": [
+      "I don't recall",
+      "Characterizations without facts",
+      "Speculation"
+    ],
+    "what_impresses_them": [
+      "Precise dates",
+      "Consistent accounts",
+      "Admitting limits"
+    ],
+    "what_irritates_them": [
+      "Argumentative non-answers",
+      "Narrative drift",
+      "Over-qualifying"
+    ],
+    "expertise_areas": [
+      "Depositions",
+      "Discovery",
+      "Witness prep"
+    ],
+    "behavioral_signals": [
+      "Repeats questions",
+      "References prior statements"
+    ],
+    "inferred_concerns_by_context": {
+      "deposition_legal": [
+        "Credibility",
+        "Document gaps"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Adversarial attorney who pins down timelines, inconsistencies, and admissions under pressure.",
+  "source_urls": []
+}

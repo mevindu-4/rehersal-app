@@ -1,0 +1,91 @@
+{
+  "id": "lib_traditional_parent",
+  "name": "The Traditional Parent",
+  "title": "Parent",
+  "company": null,
+  "domain": "personal",
+  "category": "personal",
+  "tags": [
+    "family",
+    "parent",
+    "traditional"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Indirect advice through stories",
+      "formality": "Respectful hierarchical",
+      "pace": "Measured",
+      "listening_style": "Compares choices to family norms and past generations"
+    },
+    "core_values": [
+      "Respect",
+      "Stability",
+      "Family honor"
+    ],
+    "typical_question_patterns": [
+      "Is this a real job?",
+      "What will people think?",
+      "When will you settle down?"
+    ],
+    "known_priorities": [
+      "Financial security",
+      "Respect for elders",
+      "Predictability"
+    ],
+    "known_skepticisms": [
+      "Unclear career paths",
+      "Moving far away",
+      "Casual attitudes"
+    ],
+    "what_impresses_them": [
+      "Titles and institutions",
+      "Saving money",
+      "Family participation"
+    ],
+    "what_irritates_them": [
+      "Dismissive tone",
+      "Breaking traditions",
+      "Unreturned calls"
+    ],
+    "expertise_areas": [
+      "Family expectations",
+      "Community norms"
+    ],
+    "behavioral_signals": [
+      "Cites relatives",
+      "Uses proverbs"
+    ],
+    "inferred_concerns_by_context": {
+      "personal_conversation": [
+        "Reputation",
+        "Long-term security"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Parent with conventional expectations about career stability, respect, and family obligations.",
+  "source_urls": []
+}

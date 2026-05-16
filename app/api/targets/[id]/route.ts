@@ -1,80 +1,69 @@
-import { getApiContext } from "@/lib/api-auth";
-import { jsonError, jsonOk, unauthorized } from "@/lib/api-response";
-import { createServiceClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/api/auth";
+import { jsonError, jsonOk, parseJsonBody } from "@/lib/api/http";
+import { getTargetForOrg } from "@/lib/api/targets";
+import { createServiceSupabaseClient } from "@/lib/db";
+import { UpdateTargetSchema } from "@/lib/schemas";
 
-export const runtime = "nodejs";
+type RouteContext = { params: { id: string } };
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
-  const ctx = await getApiContext();
-  if (!ctx) return unauthorized();
+export async function GET(_request: Request, { params }: RouteContext) {
+  const auth = await requireAuth();
+  if ("error" in auth) return auth.error;
 
-  const supabase = createServiceClient();
-  const { data: target, error } = await supabase
-    .from("target_profiles")
-    .select("*")
-    .eq("id", params.id)
-    .eq("org_id", ctx.orgId)
-    .single();
+  const target = await getTargetForOrg(params.id, auth.session.organization.id);
+  if (!target) return jsonError("Target not found", 404);
 
-  if (error || !target) return jsonError("Target not found", 404);
-
-  const { data: sources } = await supabase
+  const supabase = createServiceSupabaseClient();
+  const { data: sources, error } = await supabase
     .from("target_sources")
     .select("*")
     .eq("target_profile_id", params.id)
-    .order("scraped_at", { ascending: false });
+    .order("created_at", { ascending: true });
 
-  return jsonOk({ ...target, sources: sources ?? [] });
+  if (error) return jsonError(error.message, 500);
+
+  return jsonOk({ target, sources: sources ?? [] });
 }
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const ctx = await getApiContext();
-  if (!ctx) return unauthorized();
+export async function PATCH(request: Request, { params }: RouteContext) {
+  const auth = await requireAuth();
+  if ("error" in auth) return auth.error;
 
-  const body = await request.json();
-  const supabase = createServiceClient();
+  const target = await getTargetForOrg(params.id, auth.session.organization.id);
+  if (!target) return jsonError("Target not found", 404);
 
-  const updates: Record<string, unknown> = {
-    updated_at: new Date().toISOString(),
-  };
-  if (body.name) updates.name = body.name;
-  if (body.title !== undefined) updates.title = body.title;
-  if (body.company !== undefined) updates.company = body.company;
-  if (body.domain !== undefined) updates.domain = body.domain;
-  if (body.personality_json) updates.personality_json = body.personality_json;
+  const parsed = await parseJsonBody(request, UpdateTargetSchema);
+  if ("error" in parsed) return parsed.error;
 
+  const supabase = createServiceSupabaseClient();
   const { data, error } = await supabase
     .from("target_profiles")
-    .update(updates)
+    .update(parsed.data)
     .eq("id", params.id)
-    .eq("org_id", ctx.orgId)
     .select()
     .single();
 
-  if (error) return jsonError(error.message, 500);
-  return jsonOk(data);
+  if (error || !data) {
+    return jsonError(error?.message ?? "Failed to update target", 500);
+  }
+
+  return jsonOk({ target: data });
 }
 
-export async function DELETE(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
-  const ctx = await getApiContext();
-  if (!ctx) return unauthorized();
+export async function DELETE(_request: Request, { params }: RouteContext) {
+  const auth = await requireAuth();
+  if ("error" in auth) return auth.error;
 
-  const supabase = createServiceClient();
+  const target = await getTargetForOrg(params.id, auth.session.organization.id);
+  if (!target) return jsonError("Target not found", 404);
+
+  const supabase = createServiceSupabaseClient();
   const { error } = await supabase
     .from("target_profiles")
     .delete()
-    .eq("id", params.id)
-    .eq("org_id", ctx.orgId);
+    .eq("id", params.id);
 
   if (error) return jsonError(error.message, 500);
-  return jsonOk({ success: true });
+
+  return new Response(null, { status: 204 });
 }

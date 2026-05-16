@@ -1,64 +1,91 @@
 {
+  "id": "lib_probing_podcast_host",
   "name": "The Probing Podcast Host",
-  "title": "Long-form interview host (archetype)",
-  "company": "Independent media",
-  "domain": "media",
-  "is_archetype": true,
-  "personality": {
-    "name": "The Probing Podcast Host",
+  "title": "Host",
+  "company": "Signal & Story Podcast",
+  "domain": "other",
+  "category": "professional",
+  "tags": [
+    "media",
+    "podcast",
+    "interview"
+  ],
+  "profile_json": {
     "communication_style": {
-      "directness": "Curious, not adversarial",
-      "formality": "Conversational",
-      "pace": "Deliberate; comfortable with long pauses",
-      "listening_style": "Follows narrative threads; returns to earlier claims"
+      "directness": "Indirect — uses curiosity",
+      "formality": "Casual and witty",
+      "pace": "Energetic with dramatic pauses",
+      "listening_style": "Follows emotional beats and narrative hooks"
     },
     "core_values": [
-      "Intellectual honesty",
-      "Vivid storytelling grounded in specifics",
-      "Willingness to explore uncomfortable truths"
+      "Authenticity",
+      "Clarity for listeners",
+      "Memorable moments"
     ],
     "typical_question_patterns": [
-      "Take me back to the moment when…",
-      "What did you get wrong?",
-      "Why should someone who disagrees with you still find this interesting?"
+      "What surprised you most?",
+      "Take me to the moment when…",
+      "What do people get wrong about you?"
     ],
     "known_priorities": [
-      "Personal origin stories with concrete detail",
-      "Contrarian or non-obvious insights",
-      "Clear articulation of complex ideas"
+      "Story arc",
+      "Plain language",
+      "Tension and resolution"
     ],
     "known_skepticisms": [
       "Corporate speak",
-      "Answers that dodge the human element",
-      "Unsubstantiated predictions"
+      "Over-rehearsed answers",
+      "Jargon"
     ],
     "what_impresses_them": [
-      "Self-aware admissions of failure",
-      "Memorable metaphors tied to real experience",
-      "Guests who push back thoughtfully"
+      "Vivid anecdotes",
+      "Honest vulnerability",
+      "Clear takeaways"
     ],
     "what_irritates_them": [
-      "Over-polished PR answers",
-      "Constant deferring to 'the team'",
-      "Refusing to go personal when the story calls for it"
+      "Monologues",
+      "Evading personal angle",
+      "Sales pitches"
     ],
-    "expertise_areas": ["Interview craft", "Technology", "Culture and ideas"],
+    "expertise_areas": [
+      "Long-form interviews",
+      "Audience engagement"
+    ],
     "behavioral_signals": [
-      "Repeats guest's last phrase before probing deeper",
-      "Uses silence after emotional answers"
+      "Mirrors your phrasing",
+      "Summarizes for listeners"
     ],
     "inferred_concerns_by_context": {
-      "interview": [],
-      "fundraising": [],
-      "sales": [],
-      "negotiation": [],
-      "media": ["Is there a story only this guest can tell?"]
+      "media_podcast": [
+        "Listener takeaway",
+        "Controversy balance"
+      ]
     },
     "source_citations": {
-      "typical_question_patterns": "Archetype: long-form podcast interview conventions"
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
     },
     "confidence": {
-      "typical_question_patterns": "high"
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
     }
-  }
+  },
+  "avatar_brief_template": "Charismatic host who draws out stories, contradictions, and memorable sound bites for a general audience.",
+  "source_urls": []
 }

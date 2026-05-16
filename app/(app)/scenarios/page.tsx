@@ -1,54 +1,58 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { PageHeader } from "@/components/shared/PageHeader";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
+import { ScenarioCard } from "@/components/scenarios/ScenarioCard";
+import { useScenarios, useTargets } from "@/lib/hooks/use-api";
 
 export default function ScenariosPage() {
-  const [scenarios, setScenarios] = useState<
-    Array<{
-      id: string;
-      title: string;
-      conversation_type: string;
-      target_profiles?: { name: string };
-    }>
-  >([]);
+  const { data, isLoading } = useScenarios();
+  const { data: targetsData } = useTargets({ status: "complete" });
 
-  useEffect(() => {
-    fetch("/api/scenarios")
-      .then((r) => r.json())
-      .then(setScenarios);
-  }, []);
+  const scenarios = data?.scenarios ?? [];
+  const targets = targetsData?.targets ?? [];
 
   return (
-    <div>
-      <PageHeader
-        title="Scenarios"
-        description="Conversation types, duration, and goals"
-        action={
-          <Button asChild>
-            <Link href="/scenarios/new">New scenario</Link>
-          </Button>
-        }
-      />
-      <div className="grid gap-4 sm:grid-cols-2">
-        {scenarios.map((s) => (
-          <Link key={s.id} href={`/scenarios/${s.id}`}>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">{s.title}</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  {s.conversation_type.replace(/_/g, " ")}
-                  {s.target_profiles?.name ? ` · ${s.target_profiles.name}` : ""}
-                </p>
-              </CardHeader>
-              <CardContent />
-            </Card>
+    <div className="mx-auto max-w-app space-y-8 p-8 animate-fade-in-up">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-display-2 text-foreground-primary">
+            Scenarios
+          </h1>
+          <p className="mt-2 text-body text-foreground-secondary">
+            Rehearsal setups — conversation type, target, duration, and goals.
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/scenarios/new">
+            <Plus className="mr-2 h-4 w-4" /> New scenario
           </Link>
-        ))}
+        </Button>
       </div>
+
+      {isLoading ? (
+        <LoadingSkeleton rows={6} />
+      ) : scenarios.length === 0 ? (
+        <EmptyState
+          title="No scenarios yet"
+          description="Configure a rehearsal with a target, conversation type, and session goal."
+          actionLabel="Create scenario"
+          actionHref="/scenarios/new"
+        />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {scenarios.map((sc) => (
+            <ScenarioCard
+              key={sc.id}
+              scenario={sc}
+              target={targets.find((t) => t.id === sc.target_profile_id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

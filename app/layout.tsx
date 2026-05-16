@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Fraunces } from "next/font/google";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
+import { Providers } from "@/components/providers";
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
-const inter = Inter({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-fraunces",
+  weight: ["400", "600"],
+  display: "swap",
 });
 
+const geistSans = GeistSans;
+const geistMono = GeistMono;
+
 export const metadata: Metadata = {
-  title: "Rehearsal — Practice the real conversation",
+  title: "Rehearsal — Have the conversation before you have it",
   description:
-    "AI avatar platform for rehearsing high-stakes conversations with a digital twin of the person you are about to face.",
+    "Practice high-stakes conversations with AI avatars. Build targets, run live sessions, get feedback.",
 };
 
 export default function RootLayout({
@@ -19,9 +28,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} min-h-screen font-sans antialiased`}>
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${fraunces.variable} ${geistSans.variable} ${geistMono.variable} min-h-screen bg-background antialiased`}
+      >
+        <Providers>
+          {children}
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );

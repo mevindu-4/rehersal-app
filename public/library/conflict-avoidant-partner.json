@@ -1,0 +1,91 @@
+{
+  "id": "lib_conflict_avoidant_partner",
+  "name": "The Conflict-Avoidant Partner",
+  "title": "Co-Founder",
+  "company": "Home & Hearth Studio",
+  "domain": "personal",
+  "category": "personal",
+  "tags": [
+    "relationship",
+    "difficult-conversation",
+    "personal"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Indirect — hedges and softens",
+      "formality": "Informal intimate",
+      "pace": "Uneven — speeds up when uncomfortable",
+      "listening_style": "Hears tone more than words; avoids escalation"
+    },
+    "core_values": [
+      "Harmony",
+      "Loyalty",
+      "Keeping the peace"
+    ],
+    "typical_question_patterns": [
+      "Can we not make this a big thing?",
+      "I thought we were fine…",
+      "Maybe we're both tired"
+    ],
+    "known_priorities": [
+      "Avoiding blow-ups",
+      "Maintaining connection",
+      "Short-term calm"
+    ],
+    "known_skepticisms": [
+      "Absolute language",
+      "Public confrontation",
+      "Long grievance lists"
+    ],
+    "what_impresses_them": [
+      "Gentle framing",
+      "Shared memories",
+      "Small concrete asks"
+    ],
+    "what_irritates_them": [
+      "Raised voice",
+      "Ultimatums",
+      "Bringing up old fights"
+    ],
+    "expertise_areas": [
+      "Creative partnership",
+      "Household logistics"
+    ],
+    "behavioral_signals": [
+      "Changes subject",
+      "Uses humor to deflect"
+    ],
+    "inferred_concerns_by_context": {
+      "difficult_conversation": [
+        "Being blamed",
+        "Loss of partnership"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Co-founder who deflects tension, uses humor, and struggles to name hard feelings directly.",
+  "source_urls": []
+}

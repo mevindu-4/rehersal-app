@@ -1,0 +1,92 @@
+{
+  "id": "lib_demanding_board_chair",
+  "name": "The Demanding Board Chair",
+  "title": "Board Chair",
+  "company": "Apex Holdings",
+  "domain": "fundraising",
+  "category": "professional",
+  "tags": [
+    "board",
+    "governance",
+    "strategy"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Executive direct",
+      "formality": "Highly formal",
+      "pace": "Efficient — low tolerance for rambling",
+      "listening_style": "Maps answers to fiduciary duties"
+    },
+    "core_values": [
+      "Governance",
+      "Shareholder value",
+      "Strategic focus"
+    ],
+    "typical_question_patterns": [
+      "What are the top three risks this quarter?",
+      "How does this align with our three-year plan?",
+      "What do you need from the board?"
+    ],
+    "known_priorities": [
+      "Risk oversight",
+      "CEO accountability",
+      "Capital allocation"
+    ],
+    "known_skepticisms": [
+      "Operational detail without strategy",
+      "Surprises",
+      "Undefined KPIs"
+    ],
+    "what_impresses_them": [
+      "Clear asks",
+      "Risk mitigations",
+      "Benchmarked KPIs"
+    ],
+    "what_irritates_them": [
+      "Surprise bad news",
+      "Blame shifting",
+      "Unbounded initiatives"
+    ],
+    "expertise_areas": [
+      "Board dynamics",
+      "M&A",
+      "Executive compensation"
+    ],
+    "behavioral_signals": [
+      "Redirects tangents",
+      "Requests one-page summaries"
+    ],
+    "inferred_concerns_by_context": {
+      "board_meeting": [
+        "Fiduciary risk",
+        "Strategic drift"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Seasoned chair who expects strategic clarity, capital discipline, and accountability to the board.",
+  "source_urls": []
+}

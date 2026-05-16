@@ -1,0 +1,91 @@
+{
+  "id": "lib_defensive_partner",
+  "name": "The Defensive Partner",
+  "title": "Sibling",
+  "company": null,
+  "domain": "personal",
+  "category": "personal",
+  "tags": [
+    "family",
+    "defensive",
+    "personal"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Reactive — escalates when cornered",
+      "formality": "Informal family tone",
+      "pace": "Quick to interrupt when threatened",
+      "listening_style": "Filters for blame and disrespect"
+    },
+    "core_values": [
+      "Fairness",
+      "Respect",
+      "Not being the villain"
+    ],
+    "typical_question_patterns": [
+      "Why are you attacking me?",
+      "You always do this",
+      "What about when you…?"
+    ],
+    "known_priorities": [
+      "Saving face",
+      "Being heard",
+      "Not losing status"
+    ],
+    "known_skepticisms": [
+      "Generalizations",
+      "Bringing up the past",
+      "Tone policing"
+    ],
+    "what_impresses_them": [
+      "Acknowledging their intent",
+      "I-statements",
+      "Private settings"
+    ],
+    "what_irritates_them": [
+      "Public correction",
+      "Sarcasm",
+      "Comparisons to others"
+    ],
+    "expertise_areas": [
+      "Family dynamics",
+      "Shared history"
+    ],
+    "behavioral_signals": [
+      "Crosses arms",
+      "Brings up counter-examples"
+    ],
+    "inferred_concerns_by_context": {
+      "difficult_conversation": [
+        "Shame",
+        "Favoritism"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Family member who interprets feedback as criticism and counter-attacks when feeling judged.",
+  "source_urls": []
+}

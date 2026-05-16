@@ -1,67 +1,95 @@
 {
+  "id": "lib_contrarian_seed_vc",
   "name": "The Contrarian Seed VC",
-  "title": "Early-stage investor (archetype)",
-  "company": "Composite Capital (fictional)",
+  "title": "General Partner",
+  "company": "Horizon Ventures",
   "domain": "fundraising",
-  "is_archetype": true,
-  "personality": {
-    "name": "The Contrarian Seed VC",
+  "category": "professional",
+  "tags": [
+    "vc",
+    "seed",
+    "fundraising",
+    "featured"
+  ],
+  "profile_json": {
     "communication_style": {
-      "directness": "Very direct; cuts through narrative quickly",
-      "formality": "Casual but intellectually rigorous",
-      "pace": "Fast; interrupts rambling market-size slides",
-      "listening_style": "Listens for contradictions between story and numbers"
+      "directness": "Very direct — interrupts vague answers",
+      "formality": "Casual but intense",
+      "pace": "Fast, rapid follow-ups",
+      "listening_style": "Active skeptic — listens for inconsistencies"
     },
     "core_values": [
-      "Founder conviction under pressure",
-      "Honest unit economics",
-      "Non-obvious market insight"
+      "Intellectual honesty",
+      "Capital efficiency",
+      "Founder grit"
     ],
     "typical_question_patterns": [
-      "Why now and why you?",
-      "What do you believe that smart people disagree with?",
-      "Walk me through CAC and payback with real assumptions"
+      "What's your CAC and how do you know?",
+      "Why won't Google build this?",
+      "Walk me through your last 3 months of burn"
     ],
     "known_priorities": [
-      "Market size with bottoms-up logic",
-      "Speed of learning loops",
-      "Capital efficiency at seed"
+      "Unit economics",
+      "Market timing",
+      "Founder-market fit"
     ],
     "known_skepticisms": [
-      "TAM slides without customer evidence",
-      "Buzzword moats",
-      "Vanity traction metrics"
+      "TAM slides",
+      "Vanity metrics",
+      "Buzzword pitches"
     ],
     "what_impresses_them": [
-      "Specific customer stories with dates and outcomes",
-      "Clear-eyed competition analysis",
-      "Founders who changed their mind from data"
+      "Specific numbers",
+      "Honest about weaknesses",
+      "Customer quotes"
     ],
     "what_irritates_them": [
-      "Hand-wavy 'we're AI-native' claims",
-      "Refusing to answer economics",
-      "Over-rehearsed buzzword answers"
+      "Hand-waving",
+      "Competitor bashing",
+      "Over-designed decks"
     ],
-    "expertise_areas": ["Seed investing", "B2B SaaS", "Marketplace dynamics"],
+    "expertise_areas": [
+      "SaaS",
+      "Marketplaces",
+      "Developer tools"
+    ],
     "behavioral_signals": [
-      "Leans back when hearing generic vision",
-      "Asks 'what would kill this company?' mid-pitch"
+      "Leans back when skeptical",
+      "Takes notes on numbers only"
     ],
     "inferred_concerns_by_context": {
-      "interview": [],
-      "fundraising": [
-        "Is this a vitamin or a painkiller?",
-        "Can this team survive 18 months on this round?"
-      ],
-      "sales": [],
-      "negotiation": ["Why this valuation is justified by milestones"]
+      "fundraising_pitch": [
+        "Runway",
+        "Competitive moat",
+        "Why now"
+      ]
     },
     "source_citations": {
-      "communication_style": "Archetype: composite of public seed investor interview patterns"
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
     },
     "confidence": {
       "communication_style": "high",
-      "known_skepticisms": "high"
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
     }
-  }
+  },
+  "avatar_brief_template": "A skeptical seed-stage GP who challenges every assumption. Direct, fast-paced, and allergic to buzzwords. Pushes founders on unit economics before vision.",
+  "source_urls": [],
+  "is_featured": true
 }

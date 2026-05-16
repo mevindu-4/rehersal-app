@@ -1,44 +1,32 @@
-import { createServiceClient } from "@/lib/supabase/server";
-import { jsonOk } from "@/lib/api-response";
-import libraryIndex from "@/public/library/index.json";
-
-export const runtime = "nodejs";
+import { requireAuth } from "@/lib/api/auth";
+import { jsonError, jsonOk } from "@/lib/api/http";
+import { listLibraryProfiles } from "@/lib/libraryApi";
+import type { Domain, LibraryCategory } from "@/types";
 
 export async function GET(request: Request) {
+  const auth = await requireAuth();
+  if ("error" in auth) return auth.error;
+
   const { searchParams } = new URL(request.url);
-  const q = searchParams.get("q")?.toLowerCase();
+  const category = searchParams.get("category") as LibraryCategory | null;
+  const domain = searchParams.get("domain") as Domain | null;
+  const search = searchParams.get("search");
+  const sort = searchParams.get("sort") ?? "most_used";
+  const featured = searchParams.get("featured") === "true";
 
-  const supabase = createServiceClient();
-  const { data: dbFigures } = await supabase
-    .from("public_figure_library")
-    .select("*")
-    .eq("moderation_status", "approved");
-
-  const seedFigures = libraryIndex.figures;
-  let combined = [
-    ...(dbFigures ?? []).map((f) => ({
-      id: f.id,
-      name: f.name,
-      title: f.title,
-      domain: f.domain,
-      type: "public_figure",
-      accuracy_rating: f.accuracy_rating,
-      usage_count: f.usage_count,
-    })),
-    ...seedFigures.map((f) => ({
-      ...f,
-      accuracy_rating: null,
-      usage_count: 0,
-    })),
-  ];
-
-  if (q) {
-    combined = combined.filter(
-      (f) =>
-        f.name.toLowerCase().includes(q) ||
-        f.domain?.toLowerCase().includes(q)
+  try {
+    const { profiles, source } = await listLibraryProfiles({
+      category,
+      domain,
+      search,
+      sort,
+      featured,
+    });
+    return jsonOk({ profiles, total: profiles.length, source });
+  } catch (e) {
+    return jsonError(
+      e instanceof Error ? e.message : "Failed to load library",
+      500
     );
   }
-
-  return jsonOk(combined);
 }

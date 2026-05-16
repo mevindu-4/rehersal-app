@@ -1,30 +1,15 @@
-"use client";
+import { requireSession, canManageTeam } from "@/lib/auth";
+import { ReportPageClient } from "@/components/reports/ReportPageClient";
 
-import { useEffect, useState } from "react";
-import { PageHeader } from "@/components/shared/PageHeader";
-import { FeedbackReport } from "@/components/reports/FeedbackReport";
-import type { FeedbackReportJson } from "@/types";
-
-export default function ReportPage({ params }: { params: { id: string } }) {
-  const [report, setReport] = useState<FeedbackReportJson | null>(null);
-
-  useEffect(() => {
-    fetch(`/api/reports/${params.id}`)
-      .then((r) => r.json())
-      .then(setReport);
-  }, [params.id]);
-
-  if (!report) {
-    return <p className="text-muted-foreground">Loading report…</p>;
-  }
+export default async function ReportPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const session = await requireSession();
+  const showCoachTools = canManageTeam(session.membership.role);
 
   return (
-    <div>
-      <PageHeader
-        title={`Report — ${report.target_name}`}
-        description={`${report.conversation_type} · ${new Date(report.session_date).toLocaleDateString()}`}
-      />
-      <FeedbackReport report={report} reportId={params.id} />
-    </div>
+    <ReportPageClient reportId={params.id} showCoachTools={showCoachTools} />
   );
 }

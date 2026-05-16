@@ -1,57 +1,20 @@
-"use client";
+import { requireSession, canManageTeam, isTeamMode } from "@/lib/auth";
+import { ProgressDashboard } from "@/components/progress/ProgressDashboard";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { PageHeader } from "@/components/shared/PageHeader";
-
-export default function ProgressPage() {
-  const [sessions, setSessions] = useState<
-    Array<{
-      id: string;
-      created_at: string;
-      target_profiles?: { name: string };
-      evaluations?: Array<{ overall_score: number; target_fit_score: number }>;
-    }>
-  >([]);
-
-  useEffect(() => {
-    fetch("/api/sessions")
-      .then((r) => r.json())
-      .then(setSessions);
-  }, []);
-
-  const scores = sessions
-    .filter((s) => s.evaluations?.[0])
-    .map((s) => s.evaluations![0].overall_score);
-
-  const avg =
-    scores.length > 0
-      ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-      : null;
+export default async function ProgressPage() {
+  const session = await requireSession();
+  const team = isTeamMode(session.organization);
+  const coach = canManageTeam(session.membership.role);
 
   return (
-    <div>
-      <PageHeader title="Progress" description="Scores across rehearsals" />
-      {avg !== null && (
-        <p className="mb-6 text-lg">
-          Average overall score: <strong className="text-primary">{avg}</strong>
+    <div className="mx-auto max-w-app space-y-8 p-4 sm:p-8 animate-fade-in-up">
+      <div>
+        <h1 className="font-display text-display-2 text-foreground-primary">Progress</h1>
+        <p className="mt-2 text-body text-foreground-secondary">
+          Track improvement across rehearsals, skills, and streaks.
         </p>
-      )}
-      <ul className="space-y-2 text-sm">
-        {sessions.map((s) => (
-          <li key={s.id} className="flex justify-between border-b border-border py-2">
-            <span>
-              {s.target_profiles?.name} · {new Date(s.created_at).toLocaleDateString()}
-            </span>
-            <span className="text-muted-foreground">
-              {s.evaluations?.[0]?.overall_score ?? "—"}
-            </span>
-          </li>
-        ))}
-      </ul>
-      <Link href="/dashboard" className="mt-6 inline-block text-sm text-primary">
-        Back to dashboard
-      </Link>
+      </div>
+      <ProgressDashboard isTeam={team} isCoach={coach} />
     </div>
   );
 }

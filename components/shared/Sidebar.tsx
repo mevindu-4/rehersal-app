@@ -1,123 +1,146 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
-  Target,
+  BookOpen,
+  ClipboardList,
   FileText,
-  Clapperboard,
-  FileBarChart,
+  LayoutDashboard,
   Library,
-  TrendingUp,
-  Shield,
   Settings,
-  LogOut,
-  Sparkles,
+  Target,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
+import type { AuthSession } from "@/lib/auth-types";
+import { canManageTeam, isTeamMode } from "@/lib/auth-helpers";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-const navItems = [
+const baseNav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/targets", label: "Targets", icon: Target },
   { href: "/documents", label: "Documents", icon: FileText },
-  { href: "/scenarios", label: "Scenarios", icon: Clapperboard },
-  { href: "/reports", label: "Reports", icon: FileBarChart },
+  { href: "/scenarios", label: "Scenarios", icon: ClipboardList },
   { href: "/library", label: "Library", icon: Library },
   { href: "/progress", label: "Progress", icon: TrendingUp },
 ];
 
 interface SidebarProps {
-  userName?: string | null;
-  userEmail?: string | null;
-  showAdmin?: boolean;
-  authDisabled?: boolean;
+  session: AuthSession;
+  pendingAssignments?: number;
+  className?: string;
+  onNavigate?: () => void;
 }
 
 export function Sidebar({
-  userName,
-  userEmail,
-  showAdmin,
-  authDisabled,
+  session,
+  pendingAssignments = 0,
+  className,
+  onNavigate,
 }: SidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
+  const team = isTeamMode(session.organization);
+  const coach = canManageTeam(session.membership.role);
 
-  async function signOut() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/login");
-    router.refresh();
+  const nav = [...baseNav];
+  if (team) {
+    nav.push({
+      href: "/assignments",
+      label: "Assignments",
+      icon: BookOpen,
+    });
+  }
+  if (team && coach) {
+    nav.push({ href: "/admin", label: "Admin", icon: Users });
   }
 
+  const initials =
+    session.user.name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() ?? session.user.email[0]?.toUpperCase() ?? "?";
+
   return (
-    <aside className="glass-panel flex h-screen w-[17.5rem] shrink-0 flex-col border-r border-white/[0.06]">
-      <div className="border-b border-white/[0.06] p-5">
-        <Link href="/dashboard" className="group flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500/20 to-violet-500/20 ring-1 ring-white/10 transition duration-300 group-hover:shadow-glow-sm">
-            <Sparkles className="h-4 w-4 text-cyan-400 animate-pulse-soft" />
-          </span>
-          <span className="text-lg font-semibold tracking-tight">
-            <span className="text-gradient">Rehearsal</span>
-          </span>
+    <aside
+      className={cn(
+        "flex h-full w-sidebar flex-col border-r border-border bg-surface",
+        className
+      )}
+    >
+      <div className="border-b border-border-subtle p-4">
+        <Link
+          href="/dashboard"
+          onClick={onNavigate}
+          className="font-display text-h3 text-foreground-primary"
+        >
+          Rehearsal
         </Link>
-        <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          AI rehearsal studio
+        <p className="mt-1 truncate text-caption font-mono uppercase text-foreground-tertiary">
+          {session.organization.name}
         </p>
       </div>
-      <nav className="flex-1 space-y-0.5 p-3">
-        {navItems.map((item) => {
-          const active = pathname.startsWith(item.href);
+
+      <nav className="flex-1 space-y-1 p-3">
+        {nav.map(({ href, label, icon: Icon }) => {
+          const active =
+            pathname === href || pathname.startsWith(`${href}/`);
+          const showBadge =
+            href === "/assignments" && pendingAssignments > 0;
+
           return (
             <Link
-              key={item.href}
-              href={item.href}
+              key={href}
+              href={href}
+              onClick={onNavigate}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                "flex items-center gap-3 rounded-md px-3 py-2 text-small transition-colors duration-standard",
                 active
-                  ? "nav-active-glow bg-white/[0.06] text-foreground shadow-glow-sm"
-                  : "text-muted-foreground hover:bg-white/[0.04] hover:text-foreground hover:translate-x-0.5"
+                  ? "border-l-[3px] border-accent bg-surface-elevated pl-[9px] text-foreground-primary"
+                  : "border-l-[3px] border-transparent text-foreground-secondary hover:bg-surface-elevated hover:text-foreground-primary"
               )}
             >
-              <item.icon
-                className={cn("h-4 w-4", active && "text-cyan-400")}
-              />
-              {item.label}
+              <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+              <span className="flex-1">{label}</span>
+              {showBadge && (
+                <span className="rounded-full bg-accent px-2 py-0.5 text-caption font-mono text-background">
+                  {pendingAssignments}
+                </span>
+              )}
             </Link>
           );
         })}
-        {showAdmin && (
-          <Link
-            href="/admin"
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
-              pathname.startsWith("/admin")
-                ? "nav-active-glow bg-white/[0.06] text-foreground"
-                : "text-muted-foreground hover:bg-white/[0.04] hover:text-foreground"
-            )}
-          >
-            <Shield className="h-4 w-4" />
-            Admin
-          </Link>
-        )}
       </nav>
-      <div className="border-t border-white/[0.06] p-4">
-        <p className="truncate text-sm font-medium">{userName ?? "User"}</p>
-        <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
-        <div className="mt-3 flex gap-2">
-          <Button asChild variant="ghost" size="sm" className="flex-1">
-            <Link href="/settings">
-              <Settings className="mr-1 h-3 w-3" />
-              Settings
-            </Link>
-          </Button>
-          {!authDisabled && (
-            <Button variant="ghost" size="sm" onClick={signOut}>
-              <LogOut className="h-3 w-3" />
-            </Button>
+
+      <div className="border-t border-border-subtle p-3">
+        <Link
+          href="/settings"
+          onClick={onNavigate}
+          className={cn(
+            "mb-2 flex items-center gap-3 rounded-md px-3 py-2 text-small text-foreground-secondary hover:bg-surface-elevated",
+            pathname === "/settings" && "text-foreground-primary"
           )}
+        >
+          <Settings className="h-4 w-4" strokeWidth={1.5} />
+          Settings
+        </Link>
+        <div className="flex items-center gap-3 px-3 py-2">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="bg-surface-elevated text-small">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-small text-foreground-primary">
+              {session.user.name ?? session.user.email}
+            </p>
+            <p className="truncate text-caption font-mono uppercase text-foreground-tertiary">
+              {session.membership.role}
+            </p>
+          </div>
         </div>
       </div>
     </aside>

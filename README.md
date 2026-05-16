@@ -1,33 +1,49 @@
 # Rehearsal
 
-Practice the real conversation, with the real person, before it happens.
+**Have the conversation before you have it.**
+
+AI avatar platform for rehearsing high-stakes conversations with realistic target-person simulations.
+
+- **Stack:** Next.js 14 · Supabase · OpenAI · Beyond Presence  
+- **Repo:** https://github.com/Rehersal-labs/rehersal-app  
+
+---
+
+## Team documentation (read first)
+
+All specs live in **[`/docs`](./docs/README.md)** — frontend, backend, AI, and 3-person workflow.
+
+| Role | Start here |
+|------|------------|
+| **Everyone** | [docs/README.md](./docs/README.md) |
+| **3 devs parallel** | [docs/TEAM_WORKFLOW.md](./docs/TEAM_WORKFLOW.md) |
+| **Frontend** | [docs/FRONTEND_SPEC.md](./docs/FRONTEND_SPEC.md) + [docs/DESIGN_SYSTEM.md](./docs/DESIGN_SYSTEM.md) |
+| **Backend** | [docs/API_SPEC_FULL.md](./docs/API_SPEC_FULL.md) + [docs/INTEGRATIONS.md](./docs/INTEGRATIONS.md) |
+| **AI / content** | [docs/PROMPTS.md](./docs/PROMPTS.md) + [docs/LIBRARY_JSON_SPEC.md](./docs/LIBRARY_JSON_SPEC.md) |
+
+---
 
 ## Quick start
 
-See **[SETUP.md](./SETUP.md)** for your checklist (Supabase, env vars, storage bucket, demo flow).
-
 ```bash
+git clone https://github.com/Rehersal-labs/rehersal-app.git
+cd rehersal-app
 npm install
-cp .env.example .env.local   # fill in keys
+cp .env.local.example .env.local
+# Fill env vars — see docs/SETUP.md
 npm run dev
 ```
 
-## What's implemented
+---
 
-| Phase | Status |
-|-------|--------|
-| Foundation (auth, landing, shell, DB migration) | Done |
-| Target reconstruction (Jina + Claude + UI) | Done |
-| Documents + RAG chunks | Done |
-| Scenarios + avatar brief preview | Done |
-| Live sessions (Beyond Presence + mock fallback) | Done |
-| Evaluation + feedback reports | Done |
-| Library clone, progress, dashboard | Done |
-| Team/admin, Stripe, PostHog | Not yet |
+## Contracts in code
 
-## Core flow
+- `types/index.ts` — TypeScript types  
+- `lib/schemas.ts` — Zod schemas + safety validation  
+- `supabase/migrations/` — Database schema  
 
-1. **Library** or **Targets** → personality profile  
-2. **Documents** → upload resume/context  
-3. **Scenarios** → configure → **Start session**  
-4. **End session** → AI feedback report  
+---
+
+## Cursor
+
+See [`.cursor/rules/project-rules.md`](./.cursor/rules/project-rules.md).

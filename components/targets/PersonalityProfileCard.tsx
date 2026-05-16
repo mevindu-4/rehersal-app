@@ -1,87 +1,104 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { PersonalityProfile } from "@/types";
+"use client";
 
-export function PersonalityProfileCard({
-  profile,
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import type { PersonalityJSON } from "@/types";
+
+interface PersonalityProfileCardProps {
+  personality: PersonalityJSON;
+  editable?: boolean;
+  onSave?: (personality: PersonalityJSON) => void;
+}
+
+function Section({
+  title,
+  border = "accent",
+  children,
 }: {
-  profile: PersonalityProfile;
+  title: string;
+  border?: "accent" | "terracotta" | "sage";
+  children: React.ReactNode;
 }) {
+  const borderClass =
+    border === "terracotta"
+      ? "border-l-critical"
+      : border === "sage"
+        ? "border-l-success"
+        : "border-l-accent";
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>{profile.name}</CardTitle>
-          <p className="text-sm text-muted-foreground">Communication style</p>
-        </CardHeader>
-        <CardContent className="grid gap-2 text-sm sm:grid-cols-2">
-          <p>
-            <span className="text-muted-foreground">Directness:</span>{" "}
-            {profile.communication_style.directness}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Formality:</span>{" "}
-            {profile.communication_style.formality}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Pace:</span>{" "}
-            {profile.communication_style.pace}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Listening:</span>{" "}
-            {profile.communication_style.listening_style}
-          </p>
-        </CardContent>
-      </Card>
-
-      <ProfileSection title="Core values" items={profile.core_values} />
-      <ProfileSection title="Known priorities" items={profile.known_priorities} />
-      <ProfileSection title="Known skepticisms" items={profile.known_skepticisms} />
-      <ProfileSection
-        title="Typical questions"
-        items={profile.typical_question_patterns}
-      />
-      <ProfileSection title="What impresses them" items={profile.what_impresses_them} />
-      <ProfileSection title="What irritates them" items={profile.what_irritates_them} />
-
-      {Object.keys(profile.source_citations).length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Source citations</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm text-muted-foreground">
-            {Object.entries(profile.source_citations).map(([k, v]) => (
-              <p key={k}>
-                <span className="font-medium text-foreground">{k}:</span> {v}
-              </p>
-            ))}
-          </CardContent>
-        </Card>
-      )}
-    </div>
+    <Card className={cn("border border-border p-4", borderClass, "border-l-[3px]")}>
+      <h3 className="text-caption font-mono uppercase text-foreground-tertiary">
+        {title}
+      </h3>
+      <div className="mt-3">{children}</div>
+    </Card>
   );
 }
 
-function ProfileSection({
-  title,
-  items,
-}: {
-  title: string;
-  items: string[];
-}) {
-  if (!items?.length) return null;
+export function PersonalityProfileCard({
+  personality,
+  editable,
+  onSave,
+}: PersonalityProfileCardProps) {
+  const [draft, setDraft] = useState(personality);
+  const p = editable ? draft : personality;
+
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base">{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-wrap gap-2">
-        {items.map((item) => (
-          <Badge key={item} className="bg-secondary font-normal">
-            {item}
-          </Badge>
+    <div className="space-y-4">
+      <Section title="Communication style">
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(p.communication_style).map(([k, v]) => (
+            <span
+              key={k}
+              className="rounded-md bg-surface-elevated px-3 py-1 text-small capitalize"
+            >
+              {k}: {v}
+            </span>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="What they value">
+        <ul className="list-inside list-disc space-y-1 text-body">
+          {p.core_values.map((v) => (
+            <li key={v}>{v}</li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section title="Typical questions">
+        {p.typical_question_patterns.map((q) => (
+          <p key={q} className="font-display italic text-body-lg text-foreground-primary">
+            &ldquo;{q}&rdquo;
+          </p>
         ))}
-      </CardContent>
-    </Card>
+      </Section>
+
+      <Section title="Known skepticisms" border="terracotta">
+        <ul className="space-y-2">
+          {p.known_skepticisms.map((s) => (
+            <li key={s} className="border-l-[3px] border-l-critical pl-3 text-body">
+              {s}
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section title="What impresses them" border="sage">
+        <ul className="space-y-2">
+          {p.what_impresses_them.map((s) => (
+            <li key={s} className="border-l-[3px] border-l-success pl-3 text-body">
+              {s}
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      {editable && onSave && (
+        <Button onClick={() => onSave(draft)}>Save profile</Button>
+      )}
+    </div>
   );
 }

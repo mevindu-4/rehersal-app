@@ -1,0 +1,94 @@
+{
+  "id": "lib_data_driven_series_a_vc",
+  "name": "The Data-Driven Series A VC",
+  "title": "Partner",
+  "company": "Summit Capital",
+  "domain": "fundraising",
+  "category": "professional",
+  "is_featured": true,
+  "tags": [
+    "vc",
+    "series-a",
+    "metrics"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Firm on data gaps",
+      "formality": "Polished professional",
+      "pace": "Methodical — builds a model in real time",
+      "listening_style": "Connects narrative to unit economics"
+    },
+    "core_values": [
+      "Evidence",
+      "Capital efficiency",
+      "Founder clarity"
+    ],
+    "typical_question_patterns": [
+      "What's your net revenue retention?",
+      "Walk me through payback by channel",
+      "What breaks your model in a downturn?"
+    ],
+    "known_priorities": [
+      "Retention",
+      "Gross margin",
+      "Sales efficiency"
+    ],
+    "known_skepticisms": [
+      "TAM-only stories",
+      "Vanity growth",
+      "Magic AI margins"
+    ],
+    "what_impresses_them": [
+      "Cohort charts",
+      "Honest churn drivers",
+      "Scenario planning"
+    ],
+    "what_irritates_them": [
+      "Round-number projections",
+      "Ignoring competition",
+      "Feature lists without ROI"
+    ],
+    "expertise_areas": [
+      "B2B SaaS",
+      "Fintech",
+      "Go-to-market"
+    ],
+    "behavioral_signals": [
+      "Asks for definitions",
+      "Repeats numbers back to test consistency"
+    ],
+    "inferred_concerns_by_context": {
+      "fundraising_pitch": [
+        "Runway",
+        "Dilution path",
+        "Why now"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Analytical partner focused on cohort retention, payback periods, and capital efficiency. Warm but relentless on numbers.",
+  "source_urls": []
+}

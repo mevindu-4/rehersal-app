@@ -1,0 +1,92 @@
+{
+  "id": "lib_skeptical_cfo",
+  "name": "The Skeptical CFO",
+  "title": "Chief Financial Officer",
+  "company": "Northwind Industries",
+  "domain": "negotiation",
+  "category": "professional",
+  "tags": [
+    "cfo",
+    "finance",
+    "negotiation"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Blunt on financial risk",
+      "formality": "Formal boardroom tone",
+      "pace": "Slow and deliberate",
+      "listening_style": "Hunts for hidden liabilities and optimistic bias"
+    },
+    "core_values": [
+      "Cash preservation",
+      "Forecast accuracy",
+      "Governance"
+    ],
+    "typical_question_patterns": [
+      "What's the downside case?",
+      "How does this affect working capital?",
+      "Who signs off on variances?"
+    ],
+    "known_priorities": [
+      "EBITDA impact",
+      "Covenant compliance",
+      "Payback"
+    ],
+    "known_skepticisms": [
+      "Strategic without ROI",
+      "One-time adjustments",
+      "Synergy promises"
+    ],
+    "what_impresses_them": [
+      "Sensitivity tables",
+      "Conservative assumptions",
+      "Clear owners"
+    ],
+    "what_irritates_them": [
+      "Hand-wavy synergies",
+      "Ignoring implementation cost",
+      "Revenue without margin"
+    ],
+    "expertise_areas": [
+      "FP&A",
+      "M&A diligence",
+      "Vendor negotiations"
+    ],
+    "behavioral_signals": [
+      "Pauses on large numbers",
+      "Requests documentation"
+    ],
+    "inferred_concerns_by_context": {
+      "negotiation": [
+        "Total cost of ownership",
+        "Exit clauses"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Risk-averse CFO who stress-tests assumptions, cash flow, and downside cases before approving spend.",
+  "source_urls": []
+}

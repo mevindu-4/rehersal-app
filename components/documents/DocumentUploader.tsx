@@ -1,178 +1,180 @@
 "use client";
 
-import { useState } from "react";
-import { apiErrorMessage, parseApiResponse } from "@/lib/parse-api-response";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import { DocumentTypeSelector } from "@/components/documents/DocumentTypeSelector";
+import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { useDocuments } from "@/lib/hooks/use-api";
+import { cn } from "@/lib/utils";
+import type { DocType, FileType } from "@/types";
 
-const DOC_TYPES = [
-  { value: "my_background", label: "My background" },
-  { value: "opportunity", label: "The opportunity" },
-  { value: "company", label: "Company / product" },
-  { value: "prior_interactions", label: "Prior interactions" },
-  { value: "other", label: "Other" },
-] as const;
+function fileTypeFromName(name: string): FileType {
+  const ext = name.split(".").pop()?.toLowerCase();
+  if (ext === "pdf") return "pdf";
+  if (ext === "docx") return "docx";
+  return "txt";
+}
 
-type Mode = "file" | "paste";
+type Stage = "idle" | "uploading" | "registering" | "embedding" | "ready" | "error";
 
-export function DocumentUploader({ onUploaded }: { onUploaded?: () => void }) {
-  const [docType, setDocType] = useState<string>("my_background");
-  const [mode, setMode] = useState<Mode>("file");
-  const [pasteText, setPasteText] = useState("");
-  const [loading, setLoading] = useState(false);
+export function DocumentUploader({
+  onClose,
+  isCompanyShared = false,
+}: {
+  onClose?: () => void;
+  isCompanyShared?: boolean;
+}) {
+  const { refetch } = useDocuments();
+  const [docType, setDocType] = useState<DocType>("my_background");
+  const [stage, setStage] = useState<Stage>("idle");
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [pendingDocId, setPendingDocId] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  async function uploadFile(file: File) {
-    const form = new FormData();
-    form.append("file", file);
-    form.append("doc_type", docType);
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-    try {
-      const res = await fetch("/api/documents", { method: "POST", body: form });
-      const data = await parseApiResponse<{ error?: string; filename?: string }>(
-        res
-      );
-      if (!res.ok) {
-        setError(apiErrorMessage(data, "Upload failed"));
-        return;
-      }
-      setSuccess(`Uploaded ${data.filename ?? file.name}`);
-      onUploaded?.();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Upload failed");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { data: docsData } = useDocuments();
+  const pendingDoc = docsData?.documents.find((d) => d.id === pendingDocId);
 
-  async function uploadPaste() {
-    const text = pasteText.trim();
-    if (text.length < 20) {
-      setError("Please paste at least 20 characters.");
+  useEffect(() => {
+    if (!pendingDocId || !pendingDoc) return;
+    if (pendingDoc.embedding_status === "complete") {
+      setStage("ready");
+      setProgress(100);
+      void refetch();
       return;
     }
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-    try {
-      const res = await fetch("/api/documents", {
+    if (pendingDoc.embedding_status === "failed") {
+      setStage("error");
+      setError("Embedding failed. Try re-uploading.");
+      return;
+    }
+    if (stage === "registering") {
+      setStage("embedding");
+      setProgress(75);
+    }
+  }, [pendingDoc, pendingDocId, refetch, stage]);
+
+  const uploadFile = useCallback(
+    async (file: File) => {
+      setError(null);
+      setStage("uploading");
+      setProgress(20);
+
+      const supabase = createBrowserSupabaseClient();
+      const path = `${crypto.randomUUID()}-${file.name}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("documents")
+        .upload(path, file, { upsert: false });
+
+      if (uploadError) {
+        setStage("error");
+        setError(uploadError.message);
+        return;
+      }
+
+      const { data: urlData } = supabase.storage.from("documents").getPublicUrl(path);
+      setProgress(50);
+      setStage("registering");
+
+      const endpoint = isCompanyShared ? "/api/company-documents" : "/api/documents";
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          filename: file.name,
+          file_url: urlData.publicUrl,
+          file_size_bytes: file.size,
+          file_type: fileTypeFromName(file.name),
           doc_type: docType,
-          text,
-          filename: "pasted-context.txt",
+          is_company_shared: isCompanyShared,
         }),
       });
-      const data = await parseApiResponse<{ error?: string }>(res);
+
+      const body = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(apiErrorMessage(data, "Save failed"));
+        setStage("error");
+        setError(body.error ?? "Failed to register document");
         return;
       }
-      setSuccess("Text saved");
-      setPasteText("");
-      onUploaded?.();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Save failed");
-    } finally {
-      setLoading(false);
-    }
-  }
+
+      setPendingDocId(body.document?.id ?? null);
+      setStage("embedding");
+      setProgress(75);
+      void refetch();
+    },
+    [docType, isCompanyShared, refetch]
+  );
+
+  const onDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragOver(false);
+      const file = e.dataTransfer.files[0];
+      if (file) void uploadFile(file);
+    },
+    [uploadFile]
+  );
+
+  const stageLabel: Record<Stage, string> = {
+    idle: "Drop a file or click to browse",
+    uploading: "Uploading…",
+    registering: "Processing text…",
+    embedding: "Embedding…",
+    ready: "Ready",
+    error: error ?? "Upload failed",
+  };
 
   return (
-    <div className="glass-card space-y-4 rounded-xl p-6">
-      <div className="flex gap-2">
-        <Button
-          type="button"
-          size="sm"
-          variant={mode === "file" ? "default" : "outline"}
-          onClick={() => {
-            setMode("file");
-            setError(null);
+    <div className="space-y-4">
+      <DocumentTypeSelector value={docType} onChange={setDocType} />
+
+      <div
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragOver(true);
+        }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={onDrop}
+        onClick={() => inputRef.current?.click()}
+        className={cn(
+          "flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-12 transition-colors",
+          dragOver ? "border-accent bg-highlight-glow" : "border-border hover:border-border-default"
+        )}
+      >
+        <Upload className="h-8 w-8 text-foreground-tertiary" strokeWidth={1.5} />
+        <p className="mt-3 text-body text-foreground-secondary">{stageLabel[stage]}</p>
+        <input
+          ref={inputRef}
+          type="file"
+          className="hidden"
+          accept=".pdf,.docx,.txt"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) void uploadFile(file);
           }}
-        >
-          Upload file
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant={mode === "paste" ? "default" : "outline"}
-          onClick={() => {
-            setMode("paste");
-            setError(null);
-          }}
-        >
-          Paste text
-        </Button>
+        />
       </div>
 
-      <div className="space-y-2">
-        <Label>Document type</Label>
-        <select
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
-          value={docType}
-          onChange={(e) => setDocType(e.target.value)}
-          disabled={loading}
-        >
-          {DOC_TYPES.map((t) => (
-            <option key={t.value} value={t.value}>
-              {t.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      {stage !== "idle" && stage !== "error" && (
+        <Progress value={progress} className="h-2" />
+      )}
 
-      {mode === "file" ? (
-        <div className="rounded-lg border border-dashed border-white/15 bg-white/[0.02] p-4">
-          <input
-            type="file"
-            accept=".pdf,.docx,.txt,application/pdf,text/plain"
-            disabled={loading}
-            className="w-full text-sm file:mr-4 file:rounded-md file:border-0 file:bg-cyan-500/20 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-cyan-200"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) uploadFile(f);
-              e.target.value = "";
-            }}
-          />
-          <p className="mt-2 text-xs text-muted-foreground">
-            PDF, DOCX, or TXT. Scanned PDFs without text? Use Paste text instead.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          <Textarea
-            placeholder="Paste resume, deck notes, or conversation context…"
-            rows={8}
-            value={pasteText}
-            onChange={(e) => setPasteText(e.target.value)}
-            disabled={loading}
-          />
-          <Button type="button" disabled={loading} onClick={uploadPaste}>
-            {loading ? "Saving…" : "Save text"}
+      {error && <p className="text-small text-critical">{error}</p>}
+
+      <div className="flex justify-end gap-2">
+        {onClose && (
+          <Button variant="ghost" onClick={onClose}>
+            {stage === "ready" ? "Done" : "Cancel"}
           </Button>
-        </div>
-      )}
-
-      {loading && (
-        <p className="text-sm text-muted-foreground animate-pulse-soft">
-          {mode === "file" ? "Uploading and extracting text…" : "Saving…"}
-        </p>
-      )}
-      {error && (
-        <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {error}
-        </p>
-      )}
-      {success && (
-        <p className="rounded-md border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-sm text-cyan-200">
-          {success}
-        </p>
-      )}
+        )}
+      </div>
     </div>
   );
 }

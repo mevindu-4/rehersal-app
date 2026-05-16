@@ -1,38 +1,39 @@
-import { getApiContext } from "@/lib/api-auth";
-import { jsonError, jsonOk, unauthorized } from "@/lib/api-response";
+import { requireAuth } from "@/lib/api/auth";
+import { requireOpenAIConfigured } from "@/lib/api/openaiGate";
+import { jsonError, jsonOk } from "@/lib/api/http";
+import { getTargetForOrg } from "@/lib/api/targets";
+import { createServiceSupabaseClient } from "@/lib/db";
 import { reconstructTarget } from "@/lib/reconstruction";
-import { createServiceClient } from "@/lib/supabase/server";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rateLimit";
 
-export const runtime = "nodejs";
-export const maxDuration = 120;
+type RouteContext = { params: { id: string } };
 
-export async function POST(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
-  const ctx = await getApiContext();
-  if (!ctx) return unauthorized();
+export async function POST(_request: Request, { params }: RouteContext) {
+  const auth = await requireAuth();
+  if ("error" in auth) return auth.error;
 
-  const supabase = createServiceClient();
-  const { data: target } = await supabase
-    .from("target_profiles")
-    .select("id")
-    .eq("id", params.id)
-    .eq("org_id", ctx.orgId)
-    .single();
+  const openaiBlock = requireOpenAIConfigured();
+  if (openaiBlock) return openaiBlock;
 
+  const limit = checkRateLimit(
+    `reconstruct:${auth.session.user.id}`,
+    { maxRequests: 5, windowMs: 60_000 }
+  );
+  if (!limit.allowed) return rateLimitResponse(limit.resetAt);
+
+  const target = await getTargetForOrg(params.id, auth.session.organization.id);
   if (!target) return jsonError("Target not found", 404);
 
-  try {
-    await reconstructTarget(params.id);
-    const { data: updated } = await supabase
-      .from("target_profiles")
-      .select("*")
-      .eq("id", params.id)
-      .single();
-    return jsonOk(updated);
-  } catch (e) {
-    const message = e instanceof Error ? e.message : "Reconstruction failed";
-    return jsonError(message, 500);
-  }
+  const supabase = createServiceSupabaseClient();
+  await supabase
+    .from("target_profiles")
+    .update({ status: "reconstructing" })
+    .eq("id", params.id);
+
+  void reconstructTarget(params.id);
+
+  return jsonOk(
+    { message: "Reconstruction started", target_id: params.id },
+    202
+  );
 }

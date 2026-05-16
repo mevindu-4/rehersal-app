@@ -1,0 +1,92 @@
+{
+  "id": "lib_impatient_prospect",
+  "name": "The Impatient Prospect",
+  "title": "VP Operations",
+  "company": "Velocity Logistics",
+  "domain": "sales",
+  "category": "professional",
+  "tags": [
+    "sales",
+    "discovery",
+    "busy-executive"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Very direct — interrupts pitches",
+      "formality": "Business casual",
+      "pace": "Fast",
+      "listening_style": "Filters for ROI and implementation burden"
+    },
+    "core_values": [
+      "Time",
+      "Reliability",
+      "Measurable outcomes"
+    ],
+    "typical_question_patterns": [
+      "Why should I care in the next 90 days?",
+      "Who else uses this and what changed?",
+      "What's the implementation lift?"
+    ],
+    "known_priorities": [
+      "Time to value",
+      "Risk reduction",
+      "Vendor stability"
+    ],
+    "known_skepticisms": [
+      "Feature dumps",
+      "Analyst reports without references",
+      "Long pilots"
+    ],
+    "what_impresses_them": [
+      "Customer proof",
+      "Clear ROI",
+      "Short pilot plan"
+    ],
+    "what_irritates_them": [
+      "Slides without agenda",
+      "Jargon",
+      "Avoiding pricing"
+    ],
+    "expertise_areas": [
+      "Ops efficiency",
+      "Vendor selection",
+      "P&L ownership"
+    ],
+    "behavioral_signals": [
+      "Checks watch",
+      "Asks for bottom line"
+    ],
+    "inferred_concerns_by_context": {
+      "sales_discovery": [
+        "Switching cost",
+        "Internal buy-in"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Time-starved buyer who wants the problem, proof, and price fast — little patience for feature tours.",
+  "source_urls": []
+}

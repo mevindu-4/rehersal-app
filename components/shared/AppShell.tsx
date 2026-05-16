@@ -1,23 +1,57 @@
-export function AppShell({ children }: { children: React.ReactNode }) {
+"use client";
+
+import { useState } from "react";
+import { Menu } from "lucide-react";
+import type { AuthSession } from "@/lib/auth-types";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sidebar } from "./Sidebar";
+
+interface AppShellProps {
+  session: AuthSession;
+  pendingAssignments?: number;
+  children: React.ReactNode;
+}
+
+export function AppShell({
+  session,
+  pendingAssignments,
+  children,
+}: AppShellProps) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
-    <div className="relative min-h-screen">
-      <div
-        className="pointer-events-none fixed inset-0 mesh-bg mesh-bg-animated opacity-30"
-        aria-hidden
+    <div className="flex min-h-screen">
+      <Sidebar
+        session={session}
+        pendingAssignments={pendingAssignments}
+        className="hidden md:flex"
       />
-      <div
-        className="pointer-events-none fixed -left-32 top-20 h-72 w-72 rounded-full bg-cyan-500/10 blur-[100px] animate-float"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none fixed -right-32 bottom-20 h-80 w-80 rounded-full bg-violet-600/10 blur-[120px] animate-float-slow [animation-delay:1.5s]"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none fixed left-1/2 top-1/3 h-56 w-56 -translate-x-1/2 rounded-full bg-sky-500/5 blur-[80px] animate-glow-pulse"
-        aria-hidden
-      />
-      <div className="relative z-10">{children}</div>
+
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent side="left" className="w-sidebar p-0">
+          <Sidebar
+            session={session}
+            pendingAssignments={pendingAssignments}
+            onNavigate={() => setMobileOpen(false)}
+          />
+        </SheetContent>
+      </Sheet>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="flex items-center border-b border-border bg-surface px-4 py-3 md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open menu"
+          >
+            <Menu className="h-5 w-5" strokeWidth={1.5} />
+          </Button>
+          <span className="ml-3 font-display text-h3">Rehearsal</span>
+        </header>
+        <main className="flex-1 overflow-auto">{children}</main>
+      </div>
     </div>
   );
 }

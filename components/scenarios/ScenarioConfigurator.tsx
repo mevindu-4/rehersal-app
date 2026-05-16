@@ -1,177 +1,200 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const CONVERSATION_TYPES = [
-  { value: "job_interview", label: "Job interview" },
-  { value: "fundraising", label: "Fundraising pitch" },
-  { value: "sales_discovery", label: "Sales discovery" },
-  { value: "difficult_conversation", label: "Difficult conversation" },
-  { value: "negotiation", label: "Negotiation" },
-  { value: "deposition", label: "Deposition prep" },
-  { value: "media_interview", label: "Media / podcast" },
-  { value: "board_meeting", label: "Board meeting" },
-  { value: "custom", label: "Custom" },
-];
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ConversationTypePicker } from "@/components/scenarios/ConversationTypePicker";
+import { DifficultySlider } from "@/components/scenarios/DifficultySlider";
+import { AvatarBriefPreview } from "@/components/scenarios/AvatarBriefPreview";
+import {
+  useCreateScenario,
+  useDocuments,
+  useTargets,
+} from "@/lib/hooks/use-api";
+import { DOC_TYPE_LABELS } from "@/lib/constants";
+import type { ConversationType, Difficulty } from "@/types";
 
 export function ScenarioConfigurator() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const preselectedTarget = searchParams.get("targetId") ?? "";
+  const createScenario = useCreateScenario();
+  const { data: targetsData } = useTargets({ status: "complete" });
+  const { data: docsData } = useDocuments();
 
-  const [targets, setTargets] = useState<{ id: string; name: string }[]>([]);
   const [title, setTitle] = useState("");
-  const [conversationType, setConversationType] = useState("job_interview");
+  const [conversationType, setConversationType] =
+    useState<ConversationType>("job_interview");
+  const [targetId, setTargetId] = useState("");
   const [duration, setDuration] = useState(15);
-  const [difficulty, setDifficulty] = useState(3);
+  const [difficulty, setDifficulty] = useState<Difficulty>(3);
   const [goal, setGoal] = useState("");
-  const [targetId, setTargetId] = useState(preselectedTarget);
-  const [briefPreview, setBriefPreview] = useState<string | null>(null);
-  const [scenarioId, setScenarioId] = useState<string | null>(null);
+  const [docIds, setDocIds] = useState<string[]>([]);
 
-  useEffect(() => {
-    fetch("/api/targets")
-      .then((r) => r.json())
-      .then((list) =>
-        setTargets(
-          list
-            .filter((t: { reconstruction_status: string }) => t.reconstruction_status === "complete")
-            .map((t: { id: string; name: string }) => ({ id: t.id, name: t.name }))
-        )
-      );
-  }, []);
+  const targets = targetsData?.targets ?? [];
+  const documents = (docsData?.documents ?? []).filter(
+    (d) => d.embedding_status === "complete"
+  );
 
-  async function saveScenario() {
-    const res = await fetch("/api/scenarios", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title,
-        conversation_type: conversationType,
-        duration_minutes: duration,
-        difficulty,
-        goal,
-        target_profile_id: targetId || undefined,
-      }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      setScenarioId(data.id);
-      return data.id as string;
-    }
-    alert(data.error);
-    return null;
-  }
+  const docNames = useMemo(
+    () =>
+      documents
+        .filter((d) => docIds.includes(d.id))
+        .map((d) => d.filename)
+        .join(", "),
+    [documents, docIds]
+  );
 
-  async function previewBrief() {
-    const sid = scenarioId ?? (await saveScenario());
-    if (!targetId || !sid) return;
-    const res = await fetch(
-      `/api/targets/${targetId}/preview?scenarioId=${sid}`
+  function toggleDoc(id: string) {
+    setDocIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
-    const data = await res.json();
-    if (res.ok) setBriefPreview(data.plainEnglishPreview);
-    else alert(data.error);
   }
 
-  async function startSession() {
-    const sid = scenarioId ?? (await saveScenario());
-    if (!sid || !targetId) return;
-    const res = await fetch("/api/sessions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ scenarioId: sid, targetProfileId: targetId }),
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const { scenario } = await createScenario.mutateAsync({
+      title,
+      conversation_type: conversationType,
+      target_profile_id: targetId,
+      duration_minutes: duration,
+      difficulty,
+      goal,
+      included_document_ids: docIds,
     });
-    const data = await res.json();
-    if (res.ok) router.push(`/sessions/${data.sessionId}`);
-    else alert(data.error);
+    router.push(`/scenarios/${scenario.id}`);
   }
 
   return (
-    <div className="max-w-xl space-y-6">
-      <div className="space-y-2">
-        <Label>Title</Label>
-        <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-      </div>
-      <div className="space-y-2">
-        <Label>Target</Label>
-        <select
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
-          value={targetId}
-          onChange={(e) => setTargetId(e.target.value)}
-        >
-          <option value="">Select target</option>
-          {targets.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="space-y-2">
+    <form onSubmit={handleSubmit} className="mx-auto max-w-2xl space-y-10">
+      <section className="space-y-4">
         <Label>Conversation type</Label>
-        <select
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+        <ConversationTypePicker
           value={conversationType}
-          onChange={(e) => setConversationType(e.target.value)}
-        >
-          {CONVERSATION_TYPES.map((t) => (
-            <option key={t.value} value={t.value}>
-              {t.label}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="space-y-2">
-        <Label>Duration (minutes): {duration}</Label>
-        <input
-          type="range"
+          onChange={setConversationType}
+        />
+      </section>
+
+      <section className="space-y-4">
+        <Label htmlFor="title">Scenario title</Label>
+        <Input
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Series A partner pitch"
+          required
+        />
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Label>Target</Label>
+          <Link href="/library" className="text-small text-accent hover:underline">
+            Browse library
+          </Link>
+        </div>
+        <Select value={targetId} onValueChange={setTargetId} required>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a target" />
+          </SelectTrigger>
+          <SelectContent>
+            {targets.map((t) => (
+              <SelectItem key={t.id} value={t.id}>
+                {t.name}
+                {t.company ? ` · ${t.company}` : ""}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </section>
+
+      <section className="space-y-4">
+        <Label>Duration — {duration} minutes</Label>
+        <Slider
           min={5}
           max={30}
-          value={duration}
-          onChange={(e) => setDuration(Number(e.target.value))}
-          className="w-full"
+          step={5}
+          value={[duration]}
+          onValueChange={([v]) => setDuration(v)}
         />
-      </div>
-      <div className="space-y-2">
-        <Label>Pressure: {difficulty}/5</Label>
-        <input
-          type="range"
-          min={1}
-          max={5}
-          value={difficulty}
-          onChange={(e) => setDifficulty(Number(e.target.value))}
-          className="w-full"
+        <p className="font-display text-h1 text-accent">{duration}</p>
+      </section>
+
+      <section className="space-y-4">
+        <Label>Difficulty</Label>
+        <DifficultySlider value={difficulty} onChange={setDifficulty} />
+      </section>
+
+      <section className="space-y-4">
+        <Label htmlFor="goal">Session goal</Label>
+        <Textarea
+          id="goal"
+          rows={5}
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+          placeholder="What do you want to practice or achieve?"
+          required
         />
-      </div>
-      <div className="space-y-2">
-        <Label>Session goal</Label>
-        <Textarea value={goal} onChange={(e) => setGoal(e.target.value)} />
-      </div>
-      <div className="flex flex-wrap gap-2">
-        <Button type="button" variant="outline" onClick={previewBrief}>
-          Preview avatar brief
-        </Button>
-        <Button type="button" onClick={startSession} disabled={!targetId || !title}>
-          Start session
-        </Button>
-      </div>
-      {briefPreview && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Avatar brief preview</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground whitespace-pre-wrap">
-            {briefPreview}
-          </CardContent>
-        </Card>
-      )}
-    </div>
+      </section>
+
+      <section className="space-y-4">
+        <Label>Context documents</Label>
+        {documents.length === 0 ? (
+          <p className="text-small text-foreground-secondary">
+            No ready documents.{" "}
+            <Link href="/documents" className="text-accent hover:underline">
+              Upload context
+            </Link>
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {documents.map((doc) => (
+              <label
+                key={doc.id}
+                className="flex cursor-pointer items-center gap-3 rounded-md border border-border p-3"
+              >
+                <Checkbox
+                  checked={docIds.includes(doc.id)}
+                  onCheckedChange={() => toggleDoc(doc.id)}
+                />
+                <span className="text-small">
+                  {doc.filename}{" "}
+                  <span className="text-foreground-tertiary">
+                    ({DOC_TYPE_LABELS[doc.doc_type]})
+                  </span>
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
+        {docNames && (
+          <p className="text-small text-foreground-secondary">
+            The avatar will know about: {docNames}
+          </p>
+        )}
+      </section>
+
+      <AvatarBriefPreview targetId={targetId || null} />
+
+      <Button
+        type="submit"
+        disabled={
+          createScenario.isPending || !title || !targetId || !goal.trim()
+        }
+      >
+        {createScenario.isPending ? "Creating…" : "Create scenario"}
+      </Button>
+    </form>
   );
 }

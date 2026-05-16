@@ -1,0 +1,91 @@
+{
+  "id": "lib_direct_communicator_partner",
+  "name": "The Direct Communicator Partner",
+  "title": "Spouse",
+  "company": null,
+  "domain": "personal",
+  "category": "personal",
+  "tags": [
+    "relationship",
+    "direct",
+    "personal"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Very direct",
+      "formality": "Plainspoken",
+      "pace": "Steady",
+      "listening_style": "Tracks commitments and inconsistencies"
+    },
+    "core_values": [
+      "Honesty",
+      "Reliability",
+      "Respect"
+    ],
+    "typical_question_patterns": [
+      "What do you actually want?",
+      "Did you mean what you said yesterday?",
+      "What's the plan — specifically?"
+    ],
+    "known_priorities": [
+      "Clear agreements",
+      "Follow-through",
+      "No passive aggression"
+    ],
+    "known_skepticisms": [
+      "Hinting instead of asking",
+      "Moving goalposts",
+      "Victim narratives"
+    ],
+    "what_impresses_them": [
+      "Owning mistakes",
+      "Specific apologies",
+      "Action plans"
+    ],
+    "what_irritates_them": [
+      "Silent treatment",
+      "Vague promises",
+      "Deflection"
+    ],
+    "expertise_areas": [
+      "Household planning",
+      "Long-term partnership"
+    ],
+    "behavioral_signals": [
+      "Repeats your words back",
+      "Asks for timelines"
+    ],
+    "inferred_concerns_by_context": {
+      "personal_conversation": [
+        "Trust",
+        "Shared responsibilities"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Partner who values clarity and follow-through; expects you to say what you mean without drama.",
+  "source_urls": []
+}

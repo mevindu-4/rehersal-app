@@ -1,118 +1,135 @@
-const CHUNK_SIZE = 800;
-const CHUNK_OVERLAP = 100;
-/** Matches Supabase `document_chunks.embedding vector(1536)` (OpenAI small). */
-export const EMBEDDING_DIMENSIONS = 1536;
+import { createServiceSupabaseClient } from "@/lib/db";
+import { embedBatch, isOpenAIConfigured } from "@/lib/openai";
+import { parseFile } from "@/lib/fileParser";
+import type { FileType } from "@/types";
+
+const CHUNK_CHARS = 512 * 4;
+const OVERLAP_CHARS = 50 * 4;
 
 export function chunkText(text: string): string[] {
+  const normalized = text.replace(/\r\n/g, "\n").trim();
+  if (!normalized) return [];
+
   const chunks: string[] = [];
   let start = 0;
-  const cleaned = text.replace(/\s+/g, " ").trim();
-  while (start < cleaned.length) {
-    const end = Math.min(start + CHUNK_SIZE, cleaned.length);
-    chunks.push(cleaned.slice(start, end));
-    start += CHUNK_SIZE - CHUNK_OVERLAP;
+
+  while (start < normalized.length) {
+    let end = Math.min(start + CHUNK_CHARS, normalized.length);
+
+    if (end < normalized.length) {
+      const slice = normalized.slice(start, end);
+      const lastBreak = Math.max(
+        slice.lastIndexOf("\n\n"),
+        slice.lastIndexOf(". "),
+        slice.lastIndexOf("? "),
+        slice.lastIndexOf("! ")
+      );
+      if (lastBreak > CHUNK_CHARS * 0.5) {
+        end = start + lastBreak + 1;
+      }
+    }
+
+    const chunk = normalized.slice(start, end).trim();
+    if (chunk) chunks.push(chunk);
+
+    if (end >= normalized.length) break;
+    start = Math.max(end - OVERLAP_CHARS, start + 1);
   }
-  return chunks.filter((c) => c.length > 50);
+
+  return chunks;
 }
 
-function padToDimensions(vector: number[], dimensions: number): number[] {
-  if (vector.length === dimensions) return vector;
-  if (vector.length > dimensions) return vector.slice(0, dimensions);
-  return [...vector, ...new Array(dimensions - vector.length).fill(0)];
-}
+export async function embedDocument(documentId: string): Promise<void> {
+  const supabase = createServiceSupabaseClient();
 
-async function embedWithJina(
-  text: string,
-  task: "retrieval.query" | "retrieval.passage"
-): Promise<number[] | null> {
-  const apiKey = process.env.JINA_API_KEY?.trim();
-  if (!apiKey) return null;
+  const { data: doc, error } = await supabase
+    .from("user_documents")
+    .select("*")
+    .eq("id", documentId)
+    .single();
 
-  const res = await fetch("https://api.jina.ai/v1/embeddings", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "jina-embeddings-v3",
-      task,
-      dimensions: 1024,
-      input: [text.slice(0, 8000)],
-    }),
-  });
+  if (error || !doc) throw new Error("Document not found");
 
-  if (!res.ok) return null;
-  const json = await res.json();
-  const vec = json.data?.[0]?.embedding as number[] | undefined;
-  if (!vec?.length) return null;
-  return padToDimensions(vec, EMBEDDING_DIMENSIONS);
-}
-
-async function embedWithOpenAI(text: string): Promise<number[] | null> {
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
-  if (!apiKey) return null;
-
-  const res = await fetch("https://api.openai.com/v1/embeddings", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "text-embedding-3-small",
-      input: text.slice(0, 8000),
-    }),
-  });
-
-  if (!res.ok) return null;
-  const json = await res.json();
-  const vec = json.data?.[0]?.embedding as number[] | undefined;
-  if (!vec?.length) return null;
-  return padToDimensions(vec, EMBEDDING_DIMENSIONS);
-}
-
-/** Prefer Jina when configured, otherwise OpenAI. */
-export async function embedText(
-  text: string,
-  options?: { task?: "retrieval.query" | "retrieval.passage" }
-): Promise<number[] | null> {
-  const task = options?.task ?? "retrieval.passage";
-  if (process.env.JINA_API_KEY?.trim()) {
-    const jina = await embedWithJina(text, task);
-    if (jina) return jina;
+  if (!isOpenAIConfigured()) {
+    await supabase
+      .from("user_documents")
+      .update({ embedding_status: "failed" })
+      .eq("id", documentId);
+    throw new Error("OPENAI_NOT_CONFIGURED");
   }
-  return embedWithOpenAI(text);
-}
-
-export function hasEmbeddingProvider(): boolean {
-  return Boolean(
-    process.env.JINA_API_KEY?.trim() || process.env.OPENAI_API_KEY?.trim()
-  );
-}
-
-export async function embedDocument(
-  userDocumentId: string,
-  text: string
-): Promise<void> {
-  const { createServiceClient } = await import("@/lib/supabase/server");
-  const supabase = createServiceClient();
-  const chunks = chunkText(text);
 
   await supabase
-    .from("document_chunks")
-    .delete()
-    .eq("user_document_id", userDocumentId);
+    .from("user_documents")
+    .update({ embedding_status: "processing" })
+    .eq("id", documentId);
 
-  for (let i = 0; i < chunks.length; i++) {
-    const embedding = await embedText(chunks[i], {
-      task: "retrieval.passage",
-    });
-    await supabase.from("document_chunks").insert({
-      user_document_id: userDocumentId,
-      chunk_text: chunks[i],
-      chunk_index: i,
-      embedding: embedding ?? null,
-    });
+  try {
+    let text = doc.extracted_text;
+    if (!text?.trim()) {
+      const res = await fetch(doc.file_url);
+      if (!res.ok) throw new Error("Failed to fetch document file");
+      const buffer = Buffer.from(await res.arrayBuffer());
+      text = await parseFile(buffer, doc.file_type as FileType);
+      await supabase
+        .from("user_documents")
+        .update({ extracted_text: text })
+        .eq("id", documentId);
+    }
+
+    const chunks = chunkText(text ?? "");
+    if (chunks.length === 0) {
+      throw new Error("No extractable text in document");
+    }
+
+    await supabase
+      .from("document_chunks")
+      .delete()
+      .eq("user_document_id", documentId);
+
+    const vectors = await embedBatch(chunks);
+
+    const rows = chunks.map((chunk_text, index) => ({
+      user_document_id: documentId,
+      chunk_text,
+      chunk_index: index,
+      embedding: vectors[index],
+    }));
+
+    const { error: insertError } = await supabase
+      .from("document_chunks")
+      .insert(rows);
+
+    if (insertError) throw insertError;
+
+    await supabase
+      .from("user_documents")
+      .update({ embedding_status: "complete" })
+      .eq("id", documentId);
+  } catch (e) {
+    await supabase
+      .from("user_documents")
+      .update({ embedding_status: "failed" })
+      .eq("id", documentId);
+    throw e;
   }
+}
+
+export async function embedPendingDocuments(orgId?: string): Promise<number> {
+  const supabase = createServiceSupabaseClient();
+  let query = supabase
+    .from("user_documents")
+    .select("id")
+    .in("embedding_status", ["pending", "failed"]);
+
+  if (orgId) query = query.eq("org_id", orgId);
+
+  const { data: docs } = await query;
+  let count = 0;
+
+  for (const doc of docs ?? []) {
+    await embedDocument(doc.id);
+    count += 1;
+  }
+
+  return count;
 }

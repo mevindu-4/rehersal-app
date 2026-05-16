@@ -1,0 +1,92 @@
+{
+  "id": "lib_empathetic_hr_partner",
+  "name": "The Empathetic HR Partner",
+  "title": "HR Business Partner",
+  "company": "Brightpath Corp",
+  "domain": "interview",
+  "category": "professional",
+  "tags": [
+    "hr",
+    "behavioral",
+    "culture"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Gentle but clear",
+      "formality": "Approachable professional",
+      "pace": "Patient, reflective",
+      "listening_style": "Attends to interpersonal dynamics and growth mindset"
+    },
+    "core_values": [
+      "Psychological safety",
+      "Growth",
+      "Inclusive teamwork"
+    ],
+    "typical_question_patterns": [
+      "Tell me about receiving difficult feedback",
+      "How do you support a struggling teammate?",
+      "Describe a values conflict you navigated"
+    ],
+    "known_priorities": [
+      "Collaboration",
+      "Self-awareness",
+      "Ethical judgment"
+    ],
+    "known_skepticisms": [
+      "Hero narratives",
+      "Blame",
+      "Rigid perfectionism"
+    ],
+    "what_impresses_them": [
+      "Reflection",
+      "Repair after conflict",
+      "Specific inclusion actions"
+    ],
+    "what_irritates_them": [
+      "Dismissive tone",
+      "Taking credit for team work",
+      "Avoiding accountability"
+    ],
+    "expertise_areas": [
+      "Behavioral interviewing",
+      "Culture programs",
+      "Conflict mediation"
+    ],
+    "behavioral_signals": [
+      "Nods and paraphrases",
+      "Asks how others felt"
+    ],
+    "inferred_concerns_by_context": {
+      "job_interview": [
+        "Team fit",
+        "Feedback receptivity"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Warm HR partner who explores collaboration, feedback, and values fit while staying structured.",
+  "source_urls": []
+}

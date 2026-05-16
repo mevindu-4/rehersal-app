@@ -1,0 +1,92 @@
+{
+  "id": "lib_technical_deep_dive",
+  "name": "The Technical Deep-Dive Lead",
+  "title": "Principal Engineer",
+  "company": "CoreStack",
+  "domain": "interview",
+  "category": "professional",
+  "tags": [
+    "technical",
+    "architecture",
+    "interview"
+  ],
+  "profile_json": {
+    "communication_style": {
+      "directness": "Technically blunt",
+      "formality": "Engineering culture casual",
+      "pace": "Deep dives with long silences to think",
+      "listening_style": "Tests for first principles and ops reality"
+    },
+    "core_values": [
+      "Correctness",
+      "Operability",
+      "Elegant trade-offs"
+    ],
+    "typical_question_patterns": [
+      "How does this fail at scale?",
+      "Walk me through the data model",
+      "What would you monitor in production?"
+    ],
+    "known_priorities": [
+      "Reliability",
+      "Latency",
+      "Maintainability"
+    ],
+    "known_skepticisms": [
+      "Resume-driven development",
+      "Magic scaling claims",
+      "Ignoring observability"
+    ],
+    "what_impresses_them": [
+      "Failure stories",
+      "Metrics and SLOs",
+      "Simple designs"
+    ],
+    "what_irritates_them": [
+      "Buzzword architecture",
+      "No hands-on depth",
+      "Dismissing edge cases"
+    ],
+    "expertise_areas": [
+      "Distributed systems",
+      "Databases",
+      "SRE"
+    ],
+    "behavioral_signals": [
+      "Draws diagrams",
+      "Asks about on-call"
+    ],
+    "inferred_concerns_by_context": {
+      "job_interview": [
+        "Depth vs breadth",
+        "Production judgment"
+      ]
+    },
+    "source_citations": {
+      "communication_style": "Rehearsal curated archetype",
+      "core_values": "Rehearsal curated archetype",
+      "typical_question_patterns": "Rehearsal curated archetype",
+      "known_priorities": "Rehearsal curated archetype",
+      "known_skepticisms": "Rehearsal curated archetype",
+      "what_impresses_them": "Rehearsal curated archetype",
+      "what_irritates_them": "Rehearsal curated archetype",
+      "expertise_areas": "Rehearsal curated archetype",
+      "behavioral_signals": "Rehearsal curated archetype",
+      "inferred_concerns_by_context": "Rehearsal curated archetype"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "core_values": "high",
+      "typical_question_patterns": "high",
+      "known_priorities": "high",
+      "known_skepticisms": "medium",
+      "what_impresses_them": "medium",
+      "what_irritates_them": "medium",
+      "expertise_areas": "medium",
+      "behavioral_signals": "low",
+      "inferred_concerns_by_context": "low"
+    }
+  },
+  "avatar_brief_template": "Principal engineer who whiteboards architecture, failure modes, and operational trade-offs in depth.",
+  "source_urls": []
+}

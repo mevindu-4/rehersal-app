@@ -1,55 +1,32 @@
-import { getApiContext } from "@/lib/api-auth";
-import { buildAvatarBrief } from "@/lib/avatarBriefBuilder";
-import { jsonError, jsonOk, unauthorized } from "@/lib/api-response";
-import { createServiceClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/api/auth";
+import { jsonError, jsonOk } from "@/lib/api/http";
+import { getTargetForOrg } from "@/lib/api/targets";
+import { avatarSystemPrompt } from "@/lib/prompts";
 
-export const runtime = "nodejs";
+type RouteContext = { params: { id: string } };
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const ctx = await getApiContext();
-  if (!ctx) return unauthorized();
+export async function GET(_request: Request, { params }: RouteContext) {
+  const auth = await requireAuth();
+  if ("error" in auth) return auth.error;
 
-  const { searchParams } = new URL(request.url);
-  const scenarioId = searchParams.get("scenarioId");
+  const target = await getTargetForOrg(params.id, auth.session.organization.id);
+  if (!target) return jsonError("Target not found", 404);
 
-  const supabase = createServiceClient();
-  const { data: target } = await supabase
-    .from("target_profiles")
-    .select("*")
-    .eq("id", params.id)
-    .eq("org_id", ctx.orgId)
-    .single();
+  const avatar_brief =
+    target.avatar_brief_template ??
+    "Complete target reconstruction to generate an avatar brief preview.";
 
-  if (!target?.personality_json) {
-    return jsonError("Target profile not reconstructed yet", 400);
-  }
+  const system_prompt_preview =
+    target.personality_json && target.status === "complete"
+      ? avatarSystemPrompt({
+          personaBlock: avatar_brief,
+          userContextBlock: "(User documents loaded at session start)",
+          conversationType: "job_interview",
+          difficulty: 3,
+          goal: "Practice conversation with this target",
+          durationMinutes: 15,
+        })
+      : "System prompt available after reconstruction completes.";
 
-  let scenario = {
-    conversation_type: "job_interview",
-    duration_minutes: 15,
-    difficulty: 3,
-    goal: "Practice the conversation",
-  };
-
-  if (scenarioId) {
-    const { data: s } = await supabase
-      .from("scenarios")
-      .select("*")
-      .eq("id", scenarioId)
-      .eq("org_id", ctx.orgId)
-      .single();
-    if (s) scenario = s as typeof scenario;
-  }
-
-  const brief = await buildAvatarBrief({
-    personality: target.personality_json,
-    scenario,
-    userId: ctx.userId,
-    orgId: ctx.orgId,
-  });
-
-  return jsonOk(brief);
+  return jsonOk({ avatar_brief, system_prompt_preview });
 }

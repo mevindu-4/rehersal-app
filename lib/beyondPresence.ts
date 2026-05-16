@@ -1,162 +1,101 @@
-export type BeyCall = {
-  id: string;
-  livekit_url: string;
-  livekit_token?: string;
-  started_at?: string;
-};
+import type { BeyCall, BeyMessage } from "@/types";
 
-export type BeyMessage = {
-  sender: string;
-  message: string;
-  sent_at: string;
-};
+const BP_BASE_URL = "https://api.bey.dev/v1";
+const BEY_CHAT_BASE = "https://bey.chat";
 
-export class BeyondPresenceError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "BeyondPresenceError";
-  }
+function getApiKey(): string {
+  const key = process.env.BEY_API_KEY;
+  if (!key) throw new Error("Missing BEY_API_KEY");
+  return key;
 }
 
-const MOCK_MODE = !process.env.BEY_API_KEY;
-
-export function getConfiguredAgentId(): string {
-  const id = process.env.BEY_AGENT_ID?.trim();
-  if (!id) {
-    throw new BeyondPresenceError(
-      "BEY_AGENT_ID is missing in .env.local. Create an agent at beyondpresence.com and paste its ID."
-    );
-  }
+function getAgentId(): string {
+  const id = process.env.BEY_AGENT_ID;
+  if (!id) throw new Error("Missing BEY_AGENT_ID");
   return id;
 }
 
-export type BeyAgentSummary = { id: string; name: string; avatar_id: string };
-
-export async function listAgents(): Promise<BeyAgentSummary[]> {
-  if (MOCK_MODE) return [];
-
-  const res = await fetch("https://api.bey.dev/v1/agents?limit=50", {
-    headers: { "x-api-key": process.env.BEY_API_KEY! },
+async function bpFetch<T>(
+  path: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const res = await fetch(`${BP_BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": getApiKey(),
+      ...options.headers,
+    },
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    throw new BeyondPresenceError(`listAgents failed: ${text}`);
+    const body = await res.text();
+    throw new Error(`Beyond Presence API error ${res.status}: ${body}`);
   }
 
-  const json = await res.json();
-  const rows = (json.data ?? []) as BeyAgentSummary[];
-  return rows.map((a) => ({
-    id: a.id,
-    name: a.name,
-    avatar_id: a.avatar_id,
-  }));
+  const text = await res.text();
+  if (!text) return {} as T;
+  return JSON.parse(text) as T;
 }
 
-export async function createCall(params: {
-  agentId: string;
+export interface CreateCallParams {
+  agentId?: string;
   userName: string;
-  /** Beyond Presence expects tags as a string dictionary, not an array. */
+  /** Applied via PATCH /agents/{id} before the call (JIT context). */
+  systemPromptOverride?: string;
+  /** Key-value tags (max 10), e.g. { session_id: "uuid", source: "rehearsal" }. */
   tags?: Record<string, string>;
-  systemPrompt?: string;
-}): Promise<BeyCall> {
-  if (MOCK_MODE) {
-    return {
-      id: `mock-${Date.now()}`,
-      livekit_url: "about:blank",
-      started_at: new Date().toISOString(),
-    };
+}
+
+export async function createCall(params: CreateCallParams): Promise<BeyCall> {
+  const agentId = params.agentId ?? getAgentId();
+
+  if (params.systemPromptOverride) {
+    await updateAgent(agentId, params.systemPromptOverride);
   }
 
-  const res = await fetch("https://api.bey.dev/v1/calls", {
+  const data = await bpFetch<{
+    id: string;
+    agent_id: string;
+    livekit_url: string;
+    livekit_token: string;
+  }>("/calls", {
     method: "POST",
-    headers: {
-      "x-api-key": process.env.BEY_API_KEY!,
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify({
-      agent_id: params.agentId,
+      agent_id: agentId,
       livekit_username: params.userName,
-      ...(params.tags && Object.keys(params.tags).length > 0
-        ? { tags: params.tags }
-        : {}),
-      ...(params.systemPrompt
-        ? { context: { system_prompt: params.systemPrompt } }
-        : {}),
+      tags: params.tags ?? { source: "rehearsal" },
     }),
   });
 
-  if (!res.ok) {
-    const text = await res.text();
-    const hint = text.includes("Agent not found")
-      ? " Your BEY_AGENT_ID must belong to the same Beyond Presence account as BEY_API_KEY. Open GET /api/bey/agents in the browser to see valid agent IDs."
-      : "";
-    throw new BeyondPresenceError(`createCall failed: ${text}${hint}`);
-  }
-
-  const data = await res.json();
-  if (!data.livekit_token) {
-    throw new BeyondPresenceError(
-      "createCall succeeded but no livekit_token was returned. Start a new session."
-    );
-  }
   return {
     id: data.id,
-    livekit_url: data.livekit_url ?? data.join_url,
+    agent_id: data.agent_id ?? agentId,
+    join_url: `${BEY_CHAT_BASE}/${agentId}`,
+    livekit_url: data.livekit_url,
     livekit_token: data.livekit_token,
-    started_at: data.started_at,
   };
 }
 
-/** Hosted Beyond Presence UI (generic agent; not per-call API context). */
-export function buildBeyChatEmbedUrl(agentId: string): string {
-  return `https://bey.chat/${agentId}`;
-}
-
 export async function getCallMessages(callId: string): Promise<BeyMessage[]> {
-  if (MOCK_MODE || callId.startsWith("mock-")) {
-    return getMockTranscript();
-  }
-
-  const res = await fetch(`https://api.bey.dev/v1/calls/${callId}/messages`, {
-    headers: { "x-api-key": process.env.BEY_API_KEY! },
-  });
-
-  if (!res.ok) {
-    throw new BeyondPresenceError(`getCallMessages failed: ${res.status}`);
-  }
-
-  const data = await res.json();
-  const messages = Array.isArray(data) ? data : data.messages ?? [];
-  return messages.map((m: Record<string, string>) => ({
-    sender: m.sender ?? m.role ?? "unknown",
-    message: m.message ?? m.content ?? "",
-    sent_at: m.sent_at ?? m.created_at ?? new Date().toISOString(),
-  }));
+  const data = await bpFetch<{ messages: BeyMessage[] }>(
+    `/calls/${callId}/messages`
+  );
+  return data.messages ?? [];
 }
 
-function getMockTranscript(): BeyMessage[] {
-  const t = new Date().toISOString();
-  return [
-    {
-      sender: "avatar",
-      message: "Thanks for joining. Walk me through your background in two minutes.",
-      sent_at: t,
-    },
-    {
-      sender: "user",
-      message: "I led platform engineering at my last company and shipped a migration that cut deploy time significantly.",
-      sent_at: t,
-    },
-    {
-      sender: "avatar",
-      message: "What metric proves that, and what broke along the way?",
-      sent_at: t,
-    },
-    {
-      sender: "user",
-      message: "We reduced deploy time but I do not have the exact percentage handy.",
-      sent_at: t,
-    },
-  ];
+export async function endCall(callId: string): Promise<void> {
+  await bpFetch<Record<string, never>>(`/calls/${callId}/end`, {
+    method: "POST",
+  });
+}
+
+export async function updateAgent(
+  agentId: string,
+  systemPrompt: string
+): Promise<void> {
+  await bpFetch(`/agents/${agentId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ system_prompt: systemPrompt }),
+  });
 }

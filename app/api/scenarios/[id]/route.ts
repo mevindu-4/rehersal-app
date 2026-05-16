@@ -1,63 +1,76 @@
-import { getApiContext } from "@/lib/api-auth";
-import { jsonError, jsonOk, unauthorized } from "@/lib/api-response";
-import { createServiceClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/api/auth";
+import { jsonError, jsonOk, parseJsonBody } from "@/lib/api/http";
+import { scenarioBelongsToOrg } from "@/lib/api/org";
+import { createServiceSupabaseClient } from "@/lib/db";
+import { ScenarioConfigSchema } from "@/lib/schemas";
 
-export const runtime = "nodejs";
+type RouteContext = { params: { id: string } };
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
-  const ctx = await getApiContext();
-  if (!ctx) return unauthorized();
+export async function GET(_request: Request, { params }: RouteContext) {
+  const auth = await requireAuth();
+  if ("error" in auth) return auth.error;
 
-  const supabase = createServiceClient();
+  const belongs = await scenarioBelongsToOrg(
+    params.id,
+    auth.session.organization.id
+  );
+  if (!belongs) return jsonError("Scenario not found", 404);
+
+  const supabase = createServiceSupabaseClient();
   const { data, error } = await supabase
     .from("scenarios")
-    .select("*, target_profiles(*)")
+    .select("*")
     .eq("id", params.id)
-    .eq("org_id", ctx.orgId)
     .single();
 
-  if (error) return jsonError("Scenario not found", 404);
-  return jsonOk(data);
+  if (error || !data) return jsonError("Scenario not found", 404);
+
+  return jsonOk({ scenario: data });
 }
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const ctx = await getApiContext();
-  if (!ctx) return unauthorized();
+export async function PATCH(request: Request, { params }: RouteContext) {
+  const auth = await requireAuth();
+  if ("error" in auth) return auth.error;
 
-  const body = await request.json();
-  const supabase = createServiceClient();
+  const belongs = await scenarioBelongsToOrg(
+    params.id,
+    auth.session.organization.id
+  );
+  if (!belongs) return jsonError("Scenario not found", 404);
+
+  const parsed = await parseJsonBody(
+    request,
+    ScenarioConfigSchema.partial()
+  );
+  if ("error" in parsed) return parsed.error;
+
+  const supabase = createServiceSupabaseClient();
   const { data, error } = await supabase
     .from("scenarios")
-    .update(body)
+    .update(parsed.data)
     .eq("id", params.id)
-    .eq("org_id", ctx.orgId)
     .select()
     .single();
 
-  if (error) return jsonError(error.message, 500);
-  return jsonOk(data);
+  if (error || !data) return jsonError(error?.message ?? "Update failed", 500);
+
+  return jsonOk({ scenario: data });
 }
 
-export async function DELETE(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
-  const ctx = await getApiContext();
-  if (!ctx) return unauthorized();
+export async function DELETE(_request: Request, { params }: RouteContext) {
+  const auth = await requireAuth();
+  if ("error" in auth) return auth.error;
 
-  const supabase = createServiceClient();
-  const { error } = await supabase
-    .from("scenarios")
-    .delete()
-    .eq("id", params.id)
-    .eq("org_id", ctx.orgId);
+  const belongs = await scenarioBelongsToOrg(
+    params.id,
+    auth.session.organization.id
+  );
+  if (!belongs) return jsonError("Scenario not found", 404);
+
+  const supabase = createServiceSupabaseClient();
+  const { error } = await supabase.from("scenarios").delete().eq("id", params.id);
 
   if (error) return jsonError(error.message, 500);
-  return jsonOk({ success: true });
+
+  return new Response(null, { status: 204 });
 }

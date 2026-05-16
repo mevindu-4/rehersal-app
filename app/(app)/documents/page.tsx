@@ -1,53 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { PageHeader } from "@/components/shared/PageHeader";
-import { DocumentUploader } from "@/components/documents/DocumentUploader";
+import { useState } from "react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-type Doc = { id: string; filename: string; doc_type: string; created_at: string };
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { DocumentList } from "@/components/documents/DocumentList";
+import { DocumentUploader } from "@/components/documents/DocumentUploader";
 
 export default function DocumentsPage() {
-  const [docs, setDocs] = useState<Doc[]>([]);
-
-  function load() {
-    fetch("/api/documents")
-      .then((r) => r.json())
-      .then(setDocs);
-  }
-
-  useEffect(() => {
-    load();
-  }, []);
-
-  async function remove(id: string) {
-    await fetch(`/api/documents/${id}`, { method: "DELETE" });
-    load();
-  }
+  const [uploadOpen, setUploadOpen] = useState(false);
 
   return (
-    <div>
-      <PageHeader
-        title="Documents"
-        description="Resume, decks, and context the avatar can reference"
-      />
-      <DocumentUploader onUploaded={load} />
-      <ul className="mt-8 space-y-2">
-        {docs.map((d) => (
-          <li
-            key={d.id}
-            className="flex items-center justify-between rounded-md border border-border px-4 py-3 text-sm"
-          >
-            <span>
-              {d.filename}{" "}
-              <span className="text-muted-foreground">({d.doc_type})</span>
-            </span>
-            <Button variant="ghost" size="sm" onClick={() => remove(d.id)}>
-              Delete
-            </Button>
-          </li>
-        ))}
-      </ul>
+    <div className="mx-auto max-w-app space-y-8 p-8 animate-fade-in-up">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-display-2 text-foreground-primary">
+            Documents
+          </h1>
+          <p className="mt-2 text-body text-foreground-secondary">
+            Background and context the avatar can reference in rehearsals.
+          </p>
+        </div>
+        <Button onClick={() => setUploadOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" /> Upload
+        </Button>
+      </div>
+
+      <DocumentList />
+
+      <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="font-display text-h2">Upload document</DialogTitle>
+          </DialogHeader>
+          <DocumentUploader onClose={() => setUploadOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
