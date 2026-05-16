@@ -1,0 +1,28 @@
+{
+  "figures": [
+    {
+      "id": "contrarian-seed-vc",
+      "name": "The Contrarian Seed VC",
+      "title": "Early-stage investor archetype",
+      "domain": "fundraising",
+      "type": "archetype",
+      "file": "contrarian-seed-vc.json"
+    },
+    {
+      "id": "probing-podcast-host",
+      "name": "The Probing Podcast Host",
+      "title": "Long-form interview host archetype",
+      "domain": "media",
+      "type": "archetype",
+      "file": "probing-podcast-host.json"
+    },
+    {
+      "id": "skeptical-em",
+      "name": "The Skeptical Engineering Manager",
+      "title": "Senior EM interview archetype",
+      "domain": "interview",
+      "type": "archetype",
+      "file": "skeptical-em.json"
+    }
+  ]
+}

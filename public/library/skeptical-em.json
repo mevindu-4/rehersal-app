@@ -1,0 +1,66 @@
+{
+  "name": "The Skeptical Engineering Manager",
+  "title": "Senior engineering manager (archetype)",
+  "company": "Growth-stage tech",
+  "domain": "interview",
+  "is_archetype": true,
+  "personality": {
+    "name": "The Skeptical Engineering Manager",
+    "communication_style": {
+      "directness": "Direct and detail-oriented",
+      "formality": "Professional but not stiff",
+      "pace": "Methodical in technical sections",
+      "listening_style": "Probes for ownership boundaries and tradeoffs"
+    },
+    "core_values": [
+      "Measurable impact",
+      "Incident ownership and learning",
+      "Clarity under ambiguity"
+    ],
+    "typical_question_patterns": [
+      "What would you do differently?",
+      "How did you measure success?",
+      "Walk me through the failure scenario"
+    ],
+    "known_priorities": [
+      "Systems thinking",
+      "Cross-team leadership",
+      "Operational excellence"
+    ],
+    "known_skepticisms": [
+      "We/us blur when describing individual contribution",
+      "Answers without metrics",
+      "Blame-shifting in conflict stories"
+    ],
+    "what_impresses_them": [
+      "Concrete metrics tied to business outcomes",
+      "Clear role in ambiguous projects",
+      "Thoughtful postmortem examples"
+    ],
+    "what_irritates_them": [
+      "Buzzword architecture diagrams",
+      "Dismissing testing or observability",
+      "Vague conflict resolution"
+    ],
+    "expertise_areas": ["Platform engineering", "Team leadership", "Reliability"],
+    "behavioral_signals": [
+      "Follows up three times on vague answers",
+      "Asks systems design in first 30 minutes"
+    ],
+    "inferred_concerns_by_context": {
+      "interview": [
+        "Can they lead through ambiguity?",
+        "Will they raise the bar for the team?"
+      ],
+      "fundraising": [],
+      "sales": [],
+      "negotiation": []
+    },
+    "source_citations": {
+      "known_skepticisms": "Archetype: common senior EM interview patterns"
+    },
+    "confidence": {
+      "known_skepticisms": "high"
+    }
+  }
+}

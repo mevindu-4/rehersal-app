@@ -1,0 +1,64 @@
+{
+  "name": "The Probing Podcast Host",
+  "title": "Long-form interview host (archetype)",
+  "company": "Independent media",
+  "domain": "media",
+  "is_archetype": true,
+  "personality": {
+    "name": "The Probing Podcast Host",
+    "communication_style": {
+      "directness": "Curious, not adversarial",
+      "formality": "Conversational",
+      "pace": "Deliberate; comfortable with long pauses",
+      "listening_style": "Follows narrative threads; returns to earlier claims"
+    },
+    "core_values": [
+      "Intellectual honesty",
+      "Vivid storytelling grounded in specifics",
+      "Willingness to explore uncomfortable truths"
+    ],
+    "typical_question_patterns": [
+      "Take me back to the moment when…",
+      "What did you get wrong?",
+      "Why should someone who disagrees with you still find this interesting?"
+    ],
+    "known_priorities": [
+      "Personal origin stories with concrete detail",
+      "Contrarian or non-obvious insights",
+      "Clear articulation of complex ideas"
+    ],
+    "known_skepticisms": [
+      "Corporate speak",
+      "Answers that dodge the human element",
+      "Unsubstantiated predictions"
+    ],
+    "what_impresses_them": [
+      "Self-aware admissions of failure",
+      "Memorable metaphors tied to real experience",
+      "Guests who push back thoughtfully"
+    ],
+    "what_irritates_them": [
+      "Over-polished PR answers",
+      "Constant deferring to 'the team'",
+      "Refusing to go personal when the story calls for it"
+    ],
+    "expertise_areas": ["Interview craft", "Technology", "Culture and ideas"],
+    "behavioral_signals": [
+      "Repeats guest's last phrase before probing deeper",
+      "Uses silence after emotional answers"
+    ],
+    "inferred_concerns_by_context": {
+      "interview": [],
+      "fundraising": [],
+      "sales": [],
+      "negotiation": [],
+      "media": ["Is there a story only this guest can tell?"]
+    },
+    "source_citations": {
+      "typical_question_patterns": "Archetype: long-form podcast interview conventions"
+    },
+    "confidence": {
+      "typical_question_patterns": "high"
+    }
+  }
+}

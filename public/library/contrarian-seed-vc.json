@@ -1,0 +1,67 @@
+{
+  "name": "The Contrarian Seed VC",
+  "title": "Early-stage investor (archetype)",
+  "company": "Composite Capital (fictional)",
+  "domain": "fundraising",
+  "is_archetype": true,
+  "personality": {
+    "name": "The Contrarian Seed VC",
+    "communication_style": {
+      "directness": "Very direct; cuts through narrative quickly",
+      "formality": "Casual but intellectually rigorous",
+      "pace": "Fast; interrupts rambling market-size slides",
+      "listening_style": "Listens for contradictions between story and numbers"
+    },
+    "core_values": [
+      "Founder conviction under pressure",
+      "Honest unit economics",
+      "Non-obvious market insight"
+    ],
+    "typical_question_patterns": [
+      "Why now and why you?",
+      "What do you believe that smart people disagree with?",
+      "Walk me through CAC and payback with real assumptions"
+    ],
+    "known_priorities": [
+      "Market size with bottoms-up logic",
+      "Speed of learning loops",
+      "Capital efficiency at seed"
+    ],
+    "known_skepticisms": [
+      "TAM slides without customer evidence",
+      "Buzzword moats",
+      "Vanity traction metrics"
+    ],
+    "what_impresses_them": [
+      "Specific customer stories with dates and outcomes",
+      "Clear-eyed competition analysis",
+      "Founders who changed their mind from data"
+    ],
+    "what_irritates_them": [
+      "Hand-wavy 'we're AI-native' claims",
+      "Refusing to answer economics",
+      "Over-rehearsed buzzword answers"
+    ],
+    "expertise_areas": ["Seed investing", "B2B SaaS", "Marketplace dynamics"],
+    "behavioral_signals": [
+      "Leans back when hearing generic vision",
+      "Asks 'what would kill this company?' mid-pitch"
+    ],
+    "inferred_concerns_by_context": {
+      "interview": [],
+      "fundraising": [
+        "Is this a vitamin or a painkiller?",
+        "Can this team survive 18 months on this round?"
+      ],
+      "sales": [],
+      "negotiation": ["Why this valuation is justified by milestones"]
+    },
+    "source_citations": {
+      "communication_style": "Archetype: composite of public seed investor interview patterns"
+    },
+    "confidence": {
+      "communication_style": "high",
+      "known_skepticisms": "high"
+    }
+  }
+}
